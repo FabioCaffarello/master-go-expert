@@ -14,10 +14,6 @@
     "nx": "19.0.3"
   },
   "scripts": {
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
+    "test": "npx nx run-many --target=test --all"
   }
 }
