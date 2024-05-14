@@ -13,3 +13,6 @@ check-all:
 
 tidy: guard-project
 	npx nx tidy $(project)
+
+dep-graph:
+	npx nx graph
