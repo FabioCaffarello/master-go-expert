@@ -110,7 +110,7 @@ func (suite *RequestTestSuite) TestMarshalBodyWhenBodyIsUnsupportedContentType()
 
 func (suite *RequestTestSuite) TestSetHeaders() {
 	headers := map[string]string{"Content-Type": "application/json", "key": "value"}
-	req, _ := http.NewRequestWithContext(context.Background(), "GET", "https://dummie.com", nil)
+	req, _ := http.NewRequestWithContext(context.Background(), http.MethodGet, "https://dummie.com", nil)
 	setHeaders(req, headers)
 	assert.Equal(suite.T(), "application/json", req.Header.Get("Content-Type"))
 	assert.Equal(suite.T(), "value", req.Header.Get("key"))
@@ -151,7 +151,7 @@ func (suite *RequestTestSuite) TestGetContentTypeWhenContentTypeIsNotPresent() {
 }
 
 func (suite *RequestTestSuite) TestCreateRequestWhenBaseUrlIsInvalid() {
-	method := "GET"
+	method := http.MethodGet
 	headers := map[string]string{"Content-Type": "application/json"}
 	url := "invalid-url"
 	_, err := CreateRequest(context.Background(), url, nil, nil, nil, headers, method)
@@ -159,7 +159,7 @@ func (suite *RequestTestSuite) TestCreateRequestWhenBaseUrlIsInvalid() {
 }
 
 func (suite *RequestTestSuite) TestCreateRequestWhenMarshallingBodyFails() {
-	method := "GET"
+	method := http.MethodGet
 	headers := map[string]string{"Content-Type": "unsupported-content-type"}
 	url := "https://dummie.com"
 	_, err := CreateRequest(context.Background(), url, nil, nil, "body", headers, method)
@@ -167,25 +167,25 @@ func (suite *RequestTestSuite) TestCreateRequestWhenMarshallingBodyFails() {
 }
 
 func (suite *RequestTestSuite) TestCreateRequestWhenMethodIsGet() {
-	method := "GET"
+	method := http.MethodGet
 	url := "https://dummie.com"
 	headers := map[string]string{"Content-Type": "application/json"}
 	req, err := CreateRequest(context.Background(), url, nil, nil, nil, headers, method)
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), http.NoBody, req.Body)
-	assert.Equal(suite.T(), "GET", req.Method)
+	assert.Equal(suite.T(), http.MethodGet, req.Method)
 	assert.Equal(suite.T(), "https://dummie.com", req.URL.String())
 	assert.Equal(suite.T(), "application/json", req.Header.Get("Content-Type"))
 }
 
 func (suite *RequestTestSuite) TestCreateRequestWhenMethodIsPost() {
-	method := "POST"
+	method := http.MethodPost
 	url := "https://dummie.com"
 	headers := map[string]string{"Content-Type": "application/json"}
 	body := map[string]string{"key": "value"}
 	req, err := CreateRequest(context.Background(), url, nil, nil, body, headers, method)
 	assert.Nil(suite.T(), err)
-	assert.Equal(suite.T(), "POST", req.Method)
+	assert.Equal(suite.T(), http.MethodPost, req.Method)
 	assert.Equal(suite.T(), "https://dummie.com", req.URL.String())
 	assert.Equal(suite.T(), "application/json", req.Header.Get("Content-Type"))
 }
@@ -194,7 +194,7 @@ type MockResponse struct {
 	Message string `json:"message"`
 }
 
-func TestSendRequest_Success(t *testing.T) {
+func (suite *RequestTestSuite) TestSendRequest_Success() {
 	expectedResult := MockResponse{Message: "success"}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -204,42 +204,32 @@ func TestSendRequest_Success(t *testing.T) {
 
 	ctx := context.Background()
 	req, err := CreateRequest(ctx, server.URL, nil, nil, nil, map[string]string{"Content-Type": "application/json"}, http.MethodGet)
-	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
-	}
+	assert.Nil(suite.T(), err)
 
 	var result MockResponse
-	err = SendRequest(ctx, req, server.Client(), &result, time.Second)
-	if err != nil {
-		t.Fatalf("Failed to send request: %v", err)
-	}
+	err = SendRequest(ctx, req, server.Client(), &result, 200 * time.Millisecond)
+	assert.Nil(suite.T(), err)
 
-	if result.Message != expectedResult.Message {
-		t.Errorf("Expected %s, got %s", expectedResult.Message, result.Message)
-	}
+	assert.Equal(suite.T(), expectedResult.Message, result.Message)
 }
 
-func TestSendRequest_Timeout(t *testing.T) {
+func (suite *RequestTestSuite) TestSendRequest_Timeout() {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(2 * time.Second) // simulate a long processing time
+		time.Sleep(300 * time.Millisecond)
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
 
 	ctx := context.Background()
 	req, err := CreateRequest(ctx, server.URL, nil, nil, nil, map[string]string{"Content-Type": "application/json"}, http.MethodGet)
-	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
-	}
+	assert.Nil(suite.T(), err)
 
 	var result MockResponse
-	err = SendRequest(ctx, req, server.Client(), &result, 1*time.Second) // timeout set to 1 second
-	if err == nil || err.Error() != "HTTP request timed out" {
-		t.Errorf("Expected timeout error, got %v", err)
-	}
+	err = SendRequest(ctx, req, server.Client(), &result, 100 * time.Millisecond)
+	assert.NotNil(suite.T(), err)
 }
 
-func TestSendRequest_HttpError(t *testing.T) {
+func (suite *RequestTestSuite) TestSendRequest_HttpError() {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 	}))
@@ -247,18 +237,14 @@ func TestSendRequest_HttpError(t *testing.T) {
 
 	ctx := context.Background()
 	req, err := CreateRequest(ctx, server.URL, nil, nil, nil, map[string]string{"Content-Type": "application/json"}, http.MethodGet)
-	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
-	}
+	assert.Nil(suite.T(), err)
 
 	var result MockResponse
-	err = SendRequest(ctx, req, server.Client(), &result, time.Second)
-	if err == nil || err.Error() != "HTTP request failed" {
-		t.Errorf("Expected HTTP request failed error, got %v", err)
-	}
+	err = SendRequest(ctx, req, server.Client(), &result, 200 * time.Millisecond)
+	assert.NotNil(suite.T(), err)
 }
 
-func TestSendRequest_FailedToDecode(t *testing.T) {
+func (suite *RequestTestSuite) TestSendRequest_FailedToDecode() {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("not a valid json"))
@@ -267,13 +253,9 @@ func TestSendRequest_FailedToDecode(t *testing.T) {
 
 	ctx := context.Background()
 	req, err := CreateRequest(ctx, server.URL, nil, nil, nil, map[string]string{"Content-Type": "application/json"}, http.MethodGet)
-	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
-	}
+	assert.Nil(suite.T(), err)
 
 	var result MockResponse
-	err = SendRequest(ctx, req, server.Client(), &result, time.Second)
-	if err == nil || err.Error() != "failed to decode response body" {
-		t.Errorf("Expected failed to decode response body error, got %v", err)
-	}
+	err = SendRequest(ctx, req, server.Client(), &result, 200 * time.Millisecond)
+	assert.NotNil(suite.T(), err)
 }

@@ -115,14 +115,14 @@ func CreateRequest(
 ) (*http.Request, error) {
 	parsedURL, err := buildURL(baseUrl, pathParams, queryParams)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to build URL: %w", err)
 	}
 
 	contentType := getContentType(headers)
 
 	requestBody, err := marshalBody(body, contentType)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to marshal request body: %w", err)
 	}
 
 	req, err := http.NewRequestWithContext(ctx, method, parsedURL, bytes.NewBuffer(requestBody))
@@ -161,19 +161,19 @@ func SendRequest(
 
 	select {
 	case <-ctx.Done():
-		return errors.New("HTTP request timed out")
+		return fmt.Errorf("HTTP request timed out: %w", ctx.Err())
 	case res := <-resultCh:
 		if res.err != nil {
-			return errors.New("HTTP request failed")
+			return fmt.Errorf("failed to send HTTP request: %w", res.err)
 		}
 		defer res.resp.Body.Close()
 
 		if res.resp.StatusCode < http.StatusOK || res.resp.StatusCode >= http.StatusMultipleChoices {
-			return errors.New("HTTP request failed")
+			return fmt.Errorf("HTTP request failed: %s", res.resp.Status)
 		}
 
 		if err := json.NewDecoder(res.resp.Body).Decode(result); err != nil {
-			return errors.New("failed to decode response body")
+			return fmt.Errorf("failed to decode response body: %w", err)
 		}
 		return nil
 	}

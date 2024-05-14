@@ -5,4 +5,5 @@ use (
 	./libs/services/acl/dtos/exchange-rate
 	./libs/services/api-clients/exchange-rate
 	./libs/shared/go-request
+	./services/exchange-rate
 )
