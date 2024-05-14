@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - run: git fetch origin main
+
+      - uses: nrwl/nx-set-shas@v2
+      - name: Install node dependencies
+        run: npm ci
+
+      - name: Analyze affected apps and libs
+        run: npx nx print-affected --base=origin/main
+      
+      - name: Link affected projects
+        run: npx nx run affected:lint
+
+      - name: Test affected projects
+        run: npm run affected:test
