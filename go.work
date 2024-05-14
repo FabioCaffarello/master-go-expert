@@ -2,8 +2,10 @@ go 1.22
 
 use (
 	./libs/external-clients/economia-awesome-api
+	./libs/services/acl/dtos/economia-awesome-api
 	./libs/services/acl/dtos/exchange-rate
 	./libs/services/api-clients/exchange-rate
+	./libs/services/entities/exchange-rate
 	./libs/shared/go-request
 	./services/exchange-rate
 )

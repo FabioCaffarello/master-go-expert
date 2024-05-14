@@ -1,7 +1,7 @@
 package client
 
 import (
-	outputDTO "libs/services/acl/dtos/exchange-rate/output"
+	outputDTO "libs/services/acl/dtos/economia-awesome-api/output"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -27,5 +27,5 @@ func (suite *EconomiaAwesomeAPIClientTestSuite) TestGetExchangeRate() {
 	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), result)
 	assert.NotEmpty(suite.T(), result)
-	assert.IsType(suite.T(), outputDTO.ExchangeRatesDTO{}, result)
+	assert.IsType(suite.T(), outputDTO.CurrencyInfoMapDTO{}, result)
 }

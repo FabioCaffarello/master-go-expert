@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	outputDTO "libs/services/acl/dtos/exchange-rate/output"
+	outputDTO "libs/services/acl/dtos/economia-awesome-api/output"
 )
 
 type Client struct {
@@ -26,7 +26,7 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) GetExchangeRate(exchangeRateName string) (outputDTO.ExchangeRatesDTO, error) {
+func (c *Client) GetExchangeRate(exchangeRateName string) (outputDTO.CurrencyInfoMapDTO, error) {
 	pathParams := []string{"json", "last", exchangeRateName}
 	headers := map[string]string{"Content-Type": "application/json"}
 	req, err := gorequest.CreateRequest(
@@ -41,10 +41,10 @@ func (c *Client) GetExchangeRate(exchangeRateName string) (outputDTO.ExchangeRat
 	if err != nil {
 		return nil, err
 	}
-	var apiOutput outputDTO.ExchangeRatesDTO
-	err = gorequest.SendRequest(c.ctx, req, c.httpClient, &apiOutput, 600*time.Millisecond)
+	var apiOutput outputDTO.CurrencyInfoMapDTO
+	err = gorequest.SendRequest(c.ctx, req, c.httpClient, &apiOutput, 200*time.Millisecond)
 	if err != nil {
-		return outputDTO.ExchangeRatesDTO{}, err
+		return outputDTO.CurrencyInfoMapDTO{}, err
 	}
 	return apiOutput, nil
 }
