@@ -5,34 +5,26 @@ on:
     branches:
       - main
   pull_request:
-    branches:
-      - main
+
+permissions:
+  actions: read
+  contents: read
+
+
 
 jobs:
-  build:
+  main:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
-
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
 
-      - run: git fetch origin main
+      - uses: nrwl/nx-set-shas@v4
 
-      - uses: nrwl/nx-set-shas@v2
-      - name: Install node dependencies
-        run: npm ci
-
-      - name: Analyze affected apps and libs
-        run: npx nx print-affected --base=origin/main
-      
-      - name: Link affected projects
-        run: npx nx run affected:lint
-
-      - name: Test affected projects
-        run: npm run affected:test
+      - run: npx nx affected -t lint test
