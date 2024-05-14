@@ -2,10 +2,14 @@ go 1.22
 
 use (
 	./libs/external-clients/economia-awesome-api
+	./libs/resources/database/in-memory/go-doc-db
+	./libs/resources/database/in-memory/go-doc-db-client
 	./libs/services/acl/dtos/economia-awesome-api
 	./libs/services/acl/dtos/exchange-rate
 	./libs/services/api-clients/exchange-rate
 	./libs/services/entities/exchange-rate
+	./libs/services/infrastructure/database/repositories/exchange-rate/in-memory
 	./libs/shared/go-request
+	./libs/shared/go-uuid
 	./services/exchange-rate
 )
