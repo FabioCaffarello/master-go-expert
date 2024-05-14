@@ -1,6 +1,6 @@
 package outputdto
 
-type ExchangeRate struct {
+type ExchangeRateDTO struct {
 	Code       string `json:"code"`
 	CodeIn     string `json:"codein"`
 	Name       string `json:"name"`
@@ -14,4 +14,4 @@ type ExchangeRate struct {
 	CreateDate string `json:"create_date"`
 }
 
-type ExchangeRates map[string]ExchangeRate
+type ExchangeRatesDTO map[string]ExchangeRateDTO

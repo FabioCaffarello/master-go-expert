@@ -4,33 +4,123 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"encoding/xml"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
 var (
-	DefaultHTTPClient = &http.Client{
-		Timeout: 500 * time.Millisecond,
-	}
-	contentType = "application/json"
+	defaultContentType = "application/json"
 )
+
+func parseBaseURL(baseURL string) (*url.URL, error) {
+	parsedURL, err := url.Parse(baseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse base URL: %w", err)
+	}
+	if parsedURL.Scheme == "" || parsedURL.Host == "" {
+		return nil, fmt.Errorf("invalid base URL: missing scheme or host")
+	}
+	return parsedURL, nil
+}
+
+func buildURL(baseURL string, pathParams []string, queryParams map[string]string) (string, error) {
+	// Parse the base URL
+	parsedURL, err := parseBaseURL(baseURL)
+	if err != nil {
+		return "", err
+	}
+
+	// Add path parameters
+	if pathParams != nil {
+		err = setPathParams(parsedURL, pathParams)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	// Add query parameters
+	if queryParams != nil {
+		setQueryParams(parsedURL, queryParams)
+	}
+
+	return parsedURL.String(), nil
+}
+
+func marshalBody(body interface{}, contentType string) ([]byte, error) {
+	if body == nil {
+		return []byte{}, nil
+	}
+
+	switch contentType {
+	case "application/json":
+		return json.Marshal(body)
+	case "application/xml":
+		return xml.Marshal(body)
+	case "application/x-www-form-urlencoded":
+		return []byte(body.(url.Values).Encode()), nil
+	default:
+		return nil, fmt.Errorf("unsupported content type: %s", contentType)
+	}
+}
+
+func setHeaders(req *http.Request, headers map[string]string) {
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+}
+
+func setQueryParams(parsedURL *url.URL, queryParams map[string]string) {
+	query := parsedURL.Query()
+	for key, value := range queryParams {
+		query.Set(key, value)
+	}
+	parsedURL.RawQuery = query.Encode()
+}
+
+func setPathParams(parsedURL *url.URL, pathParams []string) error {
+	var err error
+	joinedPathParams := strings.Join(pathParams, "/")
+	parsedURL.Path, err = url.JoinPath(parsedURL.Path, joinedPathParams)
+	if err != nil {
+		return errors.New("failed to join path parameters")
+	}
+	return nil
+}
+
+func getContentType(headers map[string]string) string {
+	if contentType, ok := headers["Content-Type"]; ok {
+		return contentType
+	}
+	setHeaderDefaultContentType(headers, defaultContentType)
+	return defaultContentType
+}
+
+func setHeaderDefaultContentType(headers map[string]string, contentType string) {
+	headers["Content-Type"] = contentType
+}
 
 func CreateRequest(
 	ctx context.Context,
-	method string,
-	urlStr string,
+	baseUrl string,
+	pathParams []string,
+	queryParams map[string]string,
 	body interface{},
 	headers map[string]string,
-	queryParams map[string]string,
+	method string,
 ) (*http.Request, error) {
-	parsedURL, err := buildURL(urlStr, queryParams)
+	parsedURL, err := buildURL(baseUrl, pathParams, queryParams)
 	if err != nil {
 		return nil, err
 	}
 
-	requestBody, err := marshalBody(body)
+	contentType := getContentType(headers)
+
+	requestBody, err := marshalBody(body, contentType)
 	if err != nil {
 		return nil, err
 	}
@@ -45,35 +135,46 @@ func CreateRequest(
 	return req, nil
 }
 
-func buildURL(urlStr string, queryParams map[string]string) (string, error) {
-	parsedURL, err := url.Parse(urlStr)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse URL: %w", err)
+func SendRequest(
+	ctx context.Context,
+	req *http.Request,
+	client *http.Client,
+	result interface{},
+	timeout time.Duration,
+) error {
+
+	type responseResult struct {
+		resp *http.Response
+		err  error
 	}
-	if queryParams != nil {
-		query := parsedURL.Query()
-		for key, value := range queryParams {
-			query.Add(key, value)
+
+	// Create a context with the specified timeout
+	ctx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
+
+	resultCh := make(chan responseResult, 1)
+
+	go func() {
+		resp, err := client.Do(req)
+		resultCh <- responseResult{resp: resp, err: err}
+	}()
+
+	select {
+	case <-ctx.Done():
+		return errors.New("HTTP request timed out")
+	case res := <-resultCh:
+		if res.err != nil {
+			return errors.New("HTTP request failed")
 		}
-		parsedURL.RawQuery = query.Encode()
-	}
-	return parsedURL.String(), nil
-}
+		defer res.resp.Body.Close()
 
-func marshalBody(body interface{}) ([]byte, error) {
-	if body == nil {
-		return nil, nil
-	}
-	requestBody, err := json.Marshal(body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal request body: %w", err)
-	}
-	return requestBody, nil
-}
+		if res.resp.StatusCode < http.StatusOK || res.resp.StatusCode >= http.StatusMultipleChoices {
+			return errors.New("HTTP request failed")
+		}
 
-func setHeaders(req *http.Request, headers map[string]string) {
-	req.Header.Set("Content-Type", contentType)
-	for key, value := range headers {
-		req.Header.Set(key, value)
+		if err := json.NewDecoder(res.resp.Body).Decode(result); err != nil {
+			return errors.New("failed to decode response body")
+		}
+		return nil
 	}
 }

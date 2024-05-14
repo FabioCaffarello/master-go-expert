@@ -1,5 +1,5 @@
 package inputdto
 
-type ExchangeRate struct {
-	Name	   string `json:"name"`
+type ExchangeRateDTO struct {
+	Name string `json:"name"`
 }
