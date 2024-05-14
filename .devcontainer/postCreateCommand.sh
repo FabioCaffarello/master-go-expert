@@ -2,3 +2,5 @@
 
 # Setting node
 npm install
+
+# Setting golang
