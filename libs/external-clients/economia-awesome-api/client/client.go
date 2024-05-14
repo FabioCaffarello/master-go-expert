@@ -16,6 +16,9 @@ type Client struct {
 	baseURL string
 	// httpClient is the client used to make HTTP requests.
 	httpClient *http.Client
+	// Timeout
+	Timeout time.Duration
+
 }
 
 func NewClient() *Client {
@@ -23,6 +26,7 @@ func NewClient() *Client {
 		ctx:        context.Background(),
 		baseURL:    "https://economia.awesomeapi.com.br",
 		httpClient: &http.Client{},
+		Timeout:    900 * time.Millisecond,
 	}
 }
 
@@ -42,7 +46,7 @@ func (c *Client) GetExchangeRate(exchangeRateName string) (outputDTO.CurrencyInf
 		return nil, err
 	}
 	var apiOutput outputDTO.CurrencyInfoMapDTO
-	err = gorequest.SendRequest(c.ctx, req, c.httpClient, &apiOutput, 200*time.Millisecond)
+	err = gorequest.SendRequest(c.ctx, req, c.httpClient, &apiOutput, c.Timeout)
 	if err != nil {
 		return outputDTO.CurrencyInfoMapDTO{}, err
 	}
