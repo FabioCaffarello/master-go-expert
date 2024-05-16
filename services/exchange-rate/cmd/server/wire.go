@@ -4,11 +4,11 @@
 package main
 
 import (
+	"github.com/google/wire"
+	inMemoryDBClient "libs/resources/database/in-memory/go-doc-db-client/client"
 	"libs/services/entities/exchange-rate/entity"
 	"libs/services/infrastructure/database/repositories/exchange-rate/in-memory/go-doc-db/repository"
 	webHandler "libs/services/infrastructure/server/http/webserver/handlers"
-	inMemoryDBClient "libs/resources/database/in-memory/go-doc-db-client/client"
-	"github.com/google/wire"
 )
 
 var setExchangeRateRepositoryDependency = wire.NewSet(
@@ -16,7 +16,7 @@ var setExchangeRateRepositoryDependency = wire.NewSet(
 	wire.bind(
 		new(entity.ExchangeRateRepositoryInterface),
 		new(repository.ExchangeRateRepository),
-	)
+	),
 )
 
 func NewWebServiceExchangeRateHandler(client *inMemoryDBClient.Client, databaseName string) *webHandler.ExchangeRateHandler {
