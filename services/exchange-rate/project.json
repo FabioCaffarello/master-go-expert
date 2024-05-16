@@ -25,6 +25,36 @@
     },
     "lint": {
       "executor": "@nx-go/nx-go:lint"
-    }
+    },
+    "tidy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go mod tidy",
+        "cwd": "{projectRoot}"
+      }
+	},
+    "wire": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "wire",
+        "cwd": "{projectRoot}/cmd/server"
+      }
+	},
+	"go-build": {
+		"executor": "nx:run-commands",
+		"dependsOn": ["go-tidy", "wire"],
+		"options": {
+			"command": "GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -ldflags=\"-w -s\" -o dist/server ./cmd/server/main.go ./cmd/server/wire_gen.go",
+			"cwd": "{projectRoot}"
+		}
+	},
+    "image": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-go"],
+      "options": {
+        "command": "docker build -t fabiocaffarello/exchange-rate-api:latest -f ./Dockerfile .",
+		"cwd": "{projectRoot}"
+	  }
+	}
   }
 }

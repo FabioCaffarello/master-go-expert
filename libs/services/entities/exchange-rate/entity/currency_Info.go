@@ -1,9 +1,11 @@
 package exchangerateentity
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	gouuid "libs/shared/go-uuid"
+	"log"
 	"time"
 )
 
@@ -15,9 +17,9 @@ var (
 )
 
 type CurrencyInfo struct {
-	ID         gouuid.ID `json:"exchange_rate_id"`
+	ID         gouuid.ID `json:"_id"`
 	Code       string    `json:"code"`
-	CodeIn     string    `json:"codein"`
+	CodeIn     string    `json:"codeIn"`
 	Name       string    `json:"name"`
 	High       float64   `json:"high"`
 	Low        float64   `json:"low"`
@@ -33,33 +35,62 @@ func NewExchangeRate(
 	code string,
 	codeIn string,
 	name string,
-	high float64,
-	low float64,
-	varBid float64,
-	pctChange float64,
-	bid float64,
-	ask float64,
-	timestamp int64,
+	high string,
+	low string,
+	varBid string,
+	pctChange string,
+	bid string,
+	ask string,
+	timestamp string,
 	createDate string,
 ) (*CurrencyInfo, error) {
+	highFloat, err := StringToFloat64(high)
+	if err != nil {
+		return nil, err
+	}
+	lowFloat, err := StringToFloat64(low)
+	if err != nil {
+		return nil, err
+	}
+	varBidFloat, err := StringToFloat64(varBid)
+	if err != nil {
+		return nil, err
+	}
+	pctChangeFloat, err := StringToFloat64(pctChange)
+	if err != nil {
+		return nil, err
+	}
+	bidFloat, err := StringToFloat64(bid)
+	if err != nil {
+		return nil, err
+	}
+	askFloat, err := StringToFloat64(ask)
+	if err != nil {
+		return nil, err
+	}
+	timestampInt, err := StringToInt64(timestamp)
+	if err != nil {
+		return nil, err
+	}
+
 	currencyInfo := &CurrencyInfo{
-		Code:       code,
-		CodeIn:     codeIn,
-		Name:       name,
-		High:       high,
-		Low:        low,
-		VarBid:     varBid,
-		PctChange:  pctChange,
-		Bid:        bid,
-		Ask:        ask,
-		Timestamp:  timestamp,
+		Code:      code,
+		CodeIn:    codeIn,
+		Name:      name,
+		High:      highFloat,
+		Low:       lowFloat,
+		VarBid:    varBidFloat,
+		PctChange: pctChangeFloat,
+		Bid:       bidFloat,
+		Ask:       askFloat,
+		Timestamp: timestampInt,
 	}
 
 	if err := currencyInfo.isValid(); err != nil {
 		return nil, err
 	}
 
-	err := currencyInfo.setEntityID(code, codeIn, timestamp)
+	err = currencyInfo.setEntityID(code, codeIn, timestamp)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +113,7 @@ func (e *CurrencyInfo) setCreateDate(createDate string) error {
 	return nil
 }
 
-func (e *CurrencyInfo) setEntityID(code string, codeIn string, timestamp int64) error {
+func (e *CurrencyInfo) setEntityID(code string, codeIn string, timestamp string) error {
 	propertiesID := map[string]interface{}{
 		"code":      code,
 		"codeIn":    codeIn,
@@ -98,7 +129,7 @@ func (e *CurrencyInfo) setEntityID(code string, codeIn string, timestamp int64) 
 
 func (e *CurrencyInfo) isValid() error {
 	if e.Code == "" {
-		return errCodeInRequired
+		return errCodeRequired
 	}
 	if e.CodeIn == "" {
 		return errCodeInRequired
@@ -108,6 +139,37 @@ func (e *CurrencyInfo) isValid() error {
 	}
 	if e.Bid == 0 {
 		return errBidRequired
+	}
+	return nil
+}
+
+func (e *CurrencyInfo) ToMap() map[string]interface{} {
+	return map[string]interface{}{
+		"_id":         string(e.ID),
+		"code":        e.Code,
+		"codeIn":      e.CodeIn,
+		"name":        e.Name,
+		"high":        e.High,
+		"low":         e.Low,
+		"varBid":      e.VarBid,
+		"pctChange":   e.PctChange,
+		"bid":         e.Bid,
+		"ask":         e.Ask,
+		"timestamp":   e.Timestamp,
+		"create_date": e.CreateDate,
+	}
+}
+
+func MapToCurrencyInfoEntity(document map[string]interface{}, documentEntity *CurrencyInfo) error {
+	documentBytes, err := json.Marshal(document)
+	if err != nil {
+		log.Printf("Error marshalling document: %v", err)
+		return err
+	}
+	err = json.Unmarshal(documentBytes, &documentEntity)
+	if err != nil {
+		log.Printf("Error unmarshalling document: %v", err)
+		return err
 	}
 	return nil
 }

@@ -1,11 +1,11 @@
 {
-  "name": "libs-external-clients-economia-awesome-api",
-  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "name": "libs-services-usecases-exchange-rate",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "sourceRoot": "libs/external-clients/economia-awesome-api",
+  "sourceRoot": "libs/services/usecases/exchange-rate",
   "tags": [
     "lang:golang",
-    "scope:cli"
+    "scope:services"
   ],
   "targets": {
     "test": {

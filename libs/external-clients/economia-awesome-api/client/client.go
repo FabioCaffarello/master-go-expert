@@ -40,7 +40,7 @@ func (c *Client) GetExchangeRate(exchangeRateName string) (outputDTO.CurrencyInf
 		nil,
 		nil,
 		headers,
-		"GET",
+		http.MethodGet,
 	)
 	if err != nil {
 		return nil, err
