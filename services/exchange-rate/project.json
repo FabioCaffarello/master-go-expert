@@ -1,60 +1,57 @@
 {
-  "name": "services-exchange-rate",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "application",
-  "sourceRoot": "services/exchange-rate",
-  "tags": [
-    "lang:golang",
-    "scope:service"
-  ],
-  "targets": {
-    "build": {
-      "executor": "@nx-go/nx-go:build",
-      "options": {
-        "main": "{projectRoot}/cmd/server/main.go"
-      }
-    },
-    "serve": {
-      "executor": "@nx-go/nx-go:serve",
-      "options": {
-        "main": "{projectRoot}/cmd/server/main.go"
-      }
-    },
-    "test": {
-      "executor": "@nx-go/nx-go:test"
-    },
-    "lint": {
-      "executor": "@nx-go/nx-go:lint"
-    },
-    "tidy": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "go mod tidy",
-        "cwd": "{projectRoot}"
-      }
-	},
-    "wire": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "wire",
-        "cwd": "{projectRoot}/cmd/server"
-      }
-	},
-	"go-build": {
-		"executor": "nx:run-commands",
-		"dependsOn": ["go-tidy", "wire"],
-		"options": {
-			"command": "GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -ldflags=\"-w -s\" -o dist/server ./cmd/server/main.go ./cmd/server/wire_gen.go",
-			"cwd": "{projectRoot}"
+	"name": "services-exchange-rate",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"projectType": "application",
+	"sourceRoot": "services/exchange-rate",
+	"tags": ["lang:golang", "scope:service"],
+	"targets": {
+		"build": {
+			"executor": "@nx-go/nx-go:build",
+			"options": {
+				"main": "{projectRoot}/cmd/server/main.go"
+			}
+		},
+		"serve": {
+			"executor": "@nx-go/nx-go:serve",
+			"options": {
+				"main": "{projectRoot}/cmd/server/main.go"
+			}
+		},
+		"test": {
+			"executor": "@nx-go/nx-go:test"
+		},
+		"lint": {
+			"executor": "@nx-go/nx-go:lint"
+		},
+		"tidy": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "go mod tidy",
+				"cwd": "{projectRoot}"
+			}
+		},
+		"wire": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "wire",
+				"cwd": "{projectRoot}/cmd/server"
+			}
+		},
+		"go-build": {
+			"executor": "nx:run-commands",
+			"dependsOn": ["go-tidy", "wire"],
+			"options": {
+				"command": "GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -ldflags=\"-w -s\" -o dist/server ./cmd/server/main.go ./cmd/server/wire_gen.go",
+				"cwd": "{projectRoot}"
+			}
+		},
+		"image": {
+			"executor": "nx:run-commands",
+			"dependsOn": ["build-go"],
+			"options": {
+				"command": "docker build -t fabiocaffarello/exchange-rate-api:latest -f ./Dockerfile .",
+				"cwd": "{projectRoot}"
+			}
 		}
-	},
-    "image": {
-      "executor": "nx:run-commands",
-      "dependsOn": ["build-go"],
-      "options": {
-        "command": "docker build -t fabiocaffarello/exchange-rate-api:latest -f ./Dockerfile .",
-		"cwd": "{projectRoot}"
-	  }
 	}
-  }
 }
