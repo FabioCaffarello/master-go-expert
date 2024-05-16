@@ -11,7 +11,7 @@ import (
 
 var (
 	dbName        = "exchange-rate"
-	webserverPort = ":8000"
+	webserverPort = ":8080"
 )
 
 func RegisterExchangeRateWebServerTransportRoutes(server *webserver.Server, webService *webHandler.WebServiceExchangeRateHandler) {

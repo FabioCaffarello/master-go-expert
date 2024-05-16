@@ -45,6 +45,7 @@ func (c *Client) GetExchangeRate(exchangeRateName string) (outputDTO.CurrencyInf
 	if err != nil {
 		return nil, err
 	}
+	
 	var apiOutput outputDTO.CurrencyInfoMapDTO
 	err = gorequest.SendRequest(c.ctx, req, c.httpClient, &apiOutput, c.Timeout)
 	if err != nil {

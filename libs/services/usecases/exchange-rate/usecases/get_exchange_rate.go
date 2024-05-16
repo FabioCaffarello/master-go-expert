@@ -5,6 +5,7 @@ import (
 	"libs/external-clients/economia-awesome-api/client"
 	outputDTO "libs/services/acl/dtos/exchange-rate/output"
 	entity "libs/services/entities/exchange-rate/entity"
+	"log"
 )
 
 type GetExchangeRateUseCase struct {
@@ -25,9 +26,12 @@ func (u *GetExchangeRateUseCase) Execute(code, codeIn string) (outputDTO.Exchang
 	if code == "" || codeIn == "" {
 		return outputDTO.ExchangeRatesDTO{}, errors.New("currency codes cannot be empty")
 	}
+	log.Printf("Getting exchange rate from Economia Awesome API for %s/%s", code, codeIn)
 	searchKey := GenerateExchangeRateSearchKey(code, codeIn)
+	log.Printf("Search key: %s", searchKey)
 
 	awesomeAPIresult, err := u.economiaAwesomeApiClient.GetExchangeRate(searchKey)
+	log.Printf("API result: %v", awesomeAPIresult)
 	if err != nil {
 		return outputDTO.ExchangeRatesDTO{}, err
 	}
