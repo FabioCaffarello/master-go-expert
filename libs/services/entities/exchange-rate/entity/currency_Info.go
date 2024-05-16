@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	errIDRequired        = errors.New("id is required")
 	errBidRequired       = errors.New("bid is required")
 	errCodeRequired      = errors.New("code is required")
 	errCodeInRequired    = errors.New("codein is required")
@@ -86,12 +87,12 @@ func NewExchangeRate(
 		Timestamp: timestampInt,
 	}
 
-	if err := currencyInfo.isValid(); err != nil {
+	err = currencyInfo.setEntityID(code, codeIn, timestamp)
+	if err != nil {
 		return nil, err
 	}
 
-	err = currencyInfo.setEntityID(code, codeIn, timestamp)
-	if err != nil {
+	if err := currencyInfo.isValid(); err != nil {
 		return nil, err
 	}
 
@@ -128,6 +129,9 @@ func (e *CurrencyInfo) setEntityID(code string, codeIn string, timestamp string)
 }
 
 func (e *CurrencyInfo) isValid() error {
+	if e.ID == "" {
+		return errIDRequired
+	}
 	if e.Code == "" {
 		return errCodeRequired
 	}
@@ -160,16 +164,21 @@ func (e *CurrencyInfo) ToMap() map[string]interface{} {
 	}
 }
 
-func MapToCurrencyInfoEntity(document map[string]interface{}, documentEntity *CurrencyInfo) error {
+func MapToCurrencyInfoEntity(document map[string]interface{}) (*CurrencyInfo, error) {
+	var documentEntity CurrencyInfo
 	documentBytes, err := json.Marshal(document)
 	if err != nil {
 		log.Printf("Error marshalling document: %v", err)
-		return err
+		return &CurrencyInfo{}, err
 	}
 	err = json.Unmarshal(documentBytes, &documentEntity)
 	if err != nil {
 		log.Printf("Error unmarshalling document: %v", err)
-		return err
+		return &CurrencyInfo{}, err
 	}
-	return nil
+
+	if err = documentEntity.isValid(); err != nil {
+		return &CurrencyInfo{}, err
+	}
+	return &documentEntity, nil
 }

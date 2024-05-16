@@ -1,6 +1,6 @@
 package exchangerateentity
 
-type ExchangeRateReositoryInterface interface {
+type ExchangeRateRepositoryInterface interface {
 	Save(exchangeRate *CurrencyInfo) error
 	FindAll() ([]*CurrencyInfo, error)
 	Find(code string, codeIn string) ([]*CurrencyInfo, error)

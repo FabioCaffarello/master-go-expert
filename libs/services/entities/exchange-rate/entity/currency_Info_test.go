@@ -1,6 +1,7 @@
 package exchangerateentity
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -19,7 +20,6 @@ type CurrencyInfoEntityTestSuite struct {
 func TestCurrencyInfoEntityTestSuite(t *testing.T) {
 	suite.Run(t, new(CurrencyInfoEntityTestSuite))
 }
-
 
 func (suite *CurrencyInfoEntityTestSuite) TestNewExchangeRate() {
 	code := "USD"
@@ -202,22 +202,20 @@ func (suite *CurrencyInfoEntityTestSuite) TestMapToCurrencyInfoEntity() {
 	createDate, _ := time.Parse(dateStringLayout, "2021-07-21 00:00:00")
 
 	document := map[string]interface{}{
-		"_id":        "83da6030-ab1f-5b6c-8b07-7bac10f85dbc",
-		"code":       code,
-		"codein":     codeIn,
-		"name":       name,
-		"high":       high,
-		"low":        low,
-		"varBid":     varBid,
-		"pctChange":  pctChange,
-		"bid":        bid,
-		"ask":        ask,
-		"timestamp":  timestamp,
+		"_id":         "83da6030-ab1f-5b6c-8b07-7bac10f85dbc",
+		"code":        code,
+		"codein":      codeIn,
+		"name":        name,
+		"high":        high,
+		"low":         low,
+		"varBid":      varBid,
+		"pctChange":   pctChange,
+		"bid":         bid,
+		"ask":         ask,
+		"timestamp":   timestamp,
 		"create_date": createDate,
 	}
-
-	var result CurrencyInfo
-	err := MapToCurrencyInfoEntity(document, &result)
+	result, err := MapToCurrencyInfoEntity(document)
 	assert.Nil(suite.T(), err)
 
 	assert.Equal(suite.T(), code, result.Code)
@@ -231,4 +229,118 @@ func (suite *CurrencyInfoEntityTestSuite) TestMapToCurrencyInfoEntity() {
 	assert.Equal(suite.T(), ask, result.Ask)
 	assert.Equal(suite.T(), timestamp, result.Timestamp)
 	assert.Equal(suite.T(), createDate, result.CreateDate)
+}
+
+func (suite *CurrencyInfoEntityTestSuite) TestMapToCurrencyInfoEntityEdgeCases() {
+	type testCase struct {
+		name           string
+		document       map[string]interface{}
+		expectedOutput *CurrencyInfo
+		expectedErr    error
+	}
+
+	// createDate, _ := time.Parse(dateStringLayout, "2021-07-21 00:00:00")
+
+	testCases := []testCase{
+		{
+			name: "Missing fields no required",
+			document: map[string]interface{}{
+				"_id":       "83da6030-ab1f-5b6c-8b07-7bac10f85dbc",
+				"code":      "USD",
+				"codein":    "BRL",
+				"high":      5.5,
+				"low":       5.4,
+				"bid":       5.45,
+				"timestamp": int64(1626889200),
+			},
+			expectedOutput: &CurrencyInfo{
+				ID:        "83da6030-ab1f-5b6c-8b07-7bac10f85dbc",
+				Code:      "USD",
+				CodeIn:    "BRL",
+				High:      5.5,
+				Low:       5.4,
+				Bid:       5.45,
+				Timestamp: int64(1626889200),
+			},
+			expectedErr: nil,
+		},
+		{
+			name: "Incorrect data types",
+			document: map[string]interface{}{
+				"_id":       "83da6030-ab1f-5b6c-8b07-7bac10f85dbc",
+				"codein":    "BRL",
+				"code":      123,
+				"high":      "5.5",
+				"low":       "5.4",
+				"timestamp": int64(1626889200),
+			},
+			expectedOutput: &CurrencyInfo{},
+			expectedErr:    &json.UnmarshalTypeError{}, // Expecting a type error
+		},
+		{
+			name: "Extreme values",
+			document: map[string]interface{}{
+				"_id":       "83da6030-ab1f-5b6c-8b07-7bac10f85dbc",
+				"code":      "USD",
+				"codein":    "BRL",
+				"high":      1e10,
+				"low":       -1e10,
+				"bid":       1e10,
+				"ask":       -1e10,
+				"timestamp": int64(1626889200),
+			},
+			expectedOutput: &CurrencyInfo{
+				ID:        "83da6030-ab1f-5b6c-8b07-7bac10f85dbc",
+				Code:      "USD",
+				CodeIn:    "BRL",
+				High:      1e10,
+				Low:       -1e10,
+				Bid:       1e10,
+				Ask:       -1e10,
+				Timestamp: int64(1626889200),
+			},
+			expectedErr: nil,
+		},
+		{
+			name: "Null values",
+			document: map[string]interface{}{
+				"_id":       "83da6030-ab1f-5b6c-8b07-7bac10f85dbc",
+				"code":      "USD",
+				"codein":    "BRL",
+				"high":      5.5,
+				"low":       nil,
+				"bid":       5.45,
+				"ask":       5.46,
+				"timestamp": int64(1626889200),
+			},
+			expectedOutput: &CurrencyInfo{
+				ID:        "83da6030-ab1f-5b6c-8b07-7bac10f85dbc",
+				Code:      "USD",
+				CodeIn:    "BRL",
+				High:      5.5,
+				Bid:       5.45,
+				Ask:       5.46,
+				Timestamp: int64(1626889200),
+			},
+			expectedErr: nil,
+		},
+		{
+			name:           "Empty document",
+			document:       map[string]interface{}{},
+			expectedOutput: &CurrencyInfo{},
+			expectedErr:    &json.UnmarshalTypeError{},
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.T().Run(tc.name, func(t *testing.T) {
+			result, err := MapToCurrencyInfoEntity(tc.document)
+			if tc.expectedErr != nil {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+			assert.Equal(t, tc.expectedOutput, result)
+		})
+	}
 }

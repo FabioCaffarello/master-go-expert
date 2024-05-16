@@ -14,7 +14,7 @@ import (
 var setExchangeRateRepositoryDependency = wire.NewSet(
 	repository.NewExchangeRateRepository,
 	wire.bind(
-		new(entity.ExchangeRateReositoryInterface),
+		new(entity.ExchangeRateRepositoryInterface),
 		new(repository.ExchangeRateRepository),
 	)
 )

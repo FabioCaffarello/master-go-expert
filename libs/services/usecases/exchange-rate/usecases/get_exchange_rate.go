@@ -1,18 +1,19 @@
 package usecases
 
 import (
+	"errors"
 	"libs/external-clients/economia-awesome-api/client"
 	outputDTO "libs/services/acl/dtos/exchange-rate/output"
 	entity "libs/services/entities/exchange-rate/entity"
 )
 
 type GetExchangeRateUseCase struct {
-	repository               entity.ExchangeRateReositoryInterface
+	repository               entity.ExchangeRateRepositoryInterface
 	economiaAwesomeApiClient *client.Client
 }
 
 func NewGetExchangeRateUseCase(
-	repository entity.ExchangeRateReositoryInterface,
+	repository entity.ExchangeRateRepositoryInterface,
 ) *GetExchangeRateUseCase {
 	return &GetExchangeRateUseCase{
 		repository:               repository,
@@ -21,6 +22,9 @@ func NewGetExchangeRateUseCase(
 }
 
 func (u *GetExchangeRateUseCase) Execute(code, codeIn string) (outputDTO.ExchangeRatesDTO, error) {
+	if code == "" || codeIn == "" {
+		return outputDTO.ExchangeRatesDTO{}, errors.New("currency codes cannot be empty")
+	}
 	searchKey := GenerateExchangeRateSearchKey(code, codeIn)
 
 	awesomeAPIresult, err := u.economiaAwesomeApiClient.GetExchangeRate(searchKey)
@@ -28,7 +32,7 @@ func (u *GetExchangeRateUseCase) Execute(code, codeIn string) (outputDTO.Exchang
 		return outputDTO.ExchangeRatesDTO{}, err
 	}
 
-	output := make(outputDTO.ExchangeRatesDTO, 0)
+	output := make(outputDTO.ExchangeRatesDTO)
 	for _, rate := range awesomeAPIresult {
 		exchangeRate, err := entity.NewExchangeRate(
 			rate.Code,

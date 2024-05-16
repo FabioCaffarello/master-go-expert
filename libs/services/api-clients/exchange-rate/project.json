@@ -1,5 +1,5 @@
 {
-  "name": "exchange-rate",
+  "name": "libs-services-api-clients-exchange-rate",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/services/api-clients/exchange-rate",

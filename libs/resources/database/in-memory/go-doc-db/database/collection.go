@@ -2,7 +2,6 @@ package database
 
 import (
 	"errors"
-	"log"
 	"sync"
 )
 
@@ -26,15 +25,18 @@ func (c *Collection) InsertOne(
 	defer c.mu.Unlock()
 
 	documentID, ok := document["_id"]
-	log.Printf("type of documentID: %T", documentID)
 	if !ok {
 		return errors.New("_id field is required")
 	}
-	_, ok = c.data[documentID.(string)]
-	if ok {
+	documentIDStr, ok := documentID.(string)
+	if !ok {
+		return errors.New("_id field must be a string")
+	}
+
+	if _, ok := c.data[documentIDStr]; ok {
 		return errors.New("document already exists")
 	}
-	c.data[documentID.(string)] = document
+	c.data[documentIDStr] = document
 	return nil
 }
 

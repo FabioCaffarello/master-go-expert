@@ -1,3 +1,4 @@
+// Package client contains tests for the Client struct in the in-memory database client.
 package client
 
 import (
@@ -44,6 +45,11 @@ func (suite *InMemoryDocDBClientTestSuite) TearDownTest() {
 	suite.client = nil
 	suite.document1 = nil
 	suite.document2 = nil
+
+	assert.Nil(suite.T(), suite.db)
+	assert.Nil(suite.T(), suite.client)
+	assert.Nil(suite.T(), suite.document1)
+	assert.Nil(suite.T(), suite.document2)
 }
 
 func (suite *InMemoryDocDBClientTestSuite) TestClientCreateCollection() {

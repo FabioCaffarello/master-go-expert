@@ -8,11 +8,11 @@ import (
 )
 
 type WebServiceExchangeRateHandler struct {
-	ExchangeRateRepository entity.ExchangeRateReositoryInterface
+	ExchangeRateRepository entity.ExchangeRateRepositoryInterface
 }
 
 func NewWebServiceExchangeRateHandler(
-	exchangeRateRepository entity.ExchangeRateReositoryInterface,
+	exchangeRateRepository entity.ExchangeRateRepositoryInterface,
 ) *WebServiceExchangeRateHandler {
 	return &WebServiceExchangeRateHandler{
 		ExchangeRateRepository: exchangeRateRepository,

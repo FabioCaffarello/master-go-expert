@@ -71,14 +71,14 @@ func (r *ExchangeRateRepository) FindAll() ([]*entity.CurrencyInfo, error) {
 		log.Printf("Error finding all exchange rates: %v", err)
 		return nil, err
 	}
-	currencyInfos := make([]*entity.CurrencyInfo, 0, len(documents))
-	for _, document := range documents {
-		var result entity.CurrencyInfo
-		if err := entity.MapToCurrencyInfoEntity(document, &result); err != nil {
+	currencyInfos := make([]*entity.CurrencyInfo, len(documents))
+	for i, document := range documents {
+		result, err := entity.MapToCurrencyInfoEntity(document)
+		if err != nil {
 			log.Printf("Error mapping document to entity: %v", err)
 			return nil, err
 		}
-		currencyInfos = append(currencyInfos, &result)
+		currencyInfos[i] = result
 	}
 	return currencyInfos, nil
 }
@@ -91,12 +91,12 @@ func (r *ExchangeRateRepository) FindByID(id string) (*entity.CurrencyInfo, erro
 		log.Printf("Error finding exchange rate by ID: %v", err)
 		return nil, err
 	}
-	var result entity.CurrencyInfo
-	if err := entity.MapToCurrencyInfoEntity(document, &result); err != nil {
+	result, err := entity.MapToCurrencyInfoEntity(document)
+	if err != nil {
 		log.Printf("Error mapping document to entity: %v", err)
 		return nil, err
 	}
-	return &result, nil
+	return result, nil
 }
 
 func (r *ExchangeRateRepository) Find(code string, codeIn string) ([]*entity.CurrencyInfo, error) {
@@ -113,14 +113,14 @@ func (r *ExchangeRateRepository) Find(code string, codeIn string) ([]*entity.Cur
 		return nil, err
 	}
 
-	currencyInfos := make([]*entity.CurrencyInfo, 0, len(documents))
-	for _, document := range documents {
-		var result entity.CurrencyInfo
-		if err := entity.MapToCurrencyInfoEntity(document, &result); err != nil {
+	currencyInfos := make([]*entity.CurrencyInfo, len(documents))
+	for i, document := range documents {
+		result, err := entity.MapToCurrencyInfoEntity(document)
+		if err != nil {
 			log.Printf("Error mapping document to entity: %v", err)
 			return nil, err
 		}
-		currencyInfos = append(currencyInfos, &result)
+		currencyInfos[i] = result
 	}
 	return currencyInfos, nil
 }

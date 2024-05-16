@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Setting node
-npm install
+npm install || { echo "npm install failed"; exit 1; }
 
 # Setting golang
-go install github.com/google/wire/cmd/wire@latest
+go install github.com/google/wire/cmd/wire@latest || { echo "go install failed"; exit 1; }
