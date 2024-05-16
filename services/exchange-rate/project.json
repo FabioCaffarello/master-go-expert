@@ -47,9 +47,17 @@
 		},
 		"image": {
 			"executor": "nx:run-commands",
-			"dependsOn": ["build-go"],
+			"dependsOn": ["go-build"],
 			"options": {
 				"command": "docker build -t fabiocaffarello/exchange-rate-api:latest -f ./Dockerfile .",
+				"cwd": "{projectRoot}"
+			}
+		},
+		"go-run": {
+			"executor": "nx:run-commands",
+			"dependsOn": ["go-build"],
+			"options": {
+				"command": "./dist/server",
 				"cwd": "{projectRoot}"
 			}
 		}

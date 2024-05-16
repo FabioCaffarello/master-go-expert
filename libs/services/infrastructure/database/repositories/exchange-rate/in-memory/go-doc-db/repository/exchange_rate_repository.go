@@ -20,14 +20,13 @@ type ExchangeRateRepository struct {
 func NewExchangeRateRepository(
 	database string,
 	client *client.Client,
-) (*ExchangeRateRepository, error) {
-	exchangeRateRepository := &ExchangeRateRepository{
+) *ExchangeRateRepository {
+	return &ExchangeRateRepository{
 		database:          database,
 		client:            client,
 		collectionName:    collectionName,
 		collectionCreated: false,
 	}
-	return exchangeRateRepository, nil
 }
 
 // init initializes the repository by ensuring the collection exists
@@ -123,4 +122,15 @@ func (r *ExchangeRateRepository) Find(code string, codeIn string) ([]*entity.Cur
 		currencyInfos[i] = result
 	}
 	return currencyInfos, nil
+}
+
+func (r *ExchangeRateRepository) Delete(id string) error {
+	log.Printf("Deleting exchange rate by ID from collection: %v", r.collectionName)
+	r.init()
+	err := r.client.DeleteOne(r.collectionName, id)
+	if err != nil {
+		log.Printf("Error deleting exchange rate by ID: %v", err)
+		return err
+	}
+	return nil
 }

@@ -16,3 +16,9 @@ tidy: guard-project
 
 dep-graph:
 	npx nx graph
+
+run:
+	docker-compose up -d
+
+stop:
+	docker-compose down

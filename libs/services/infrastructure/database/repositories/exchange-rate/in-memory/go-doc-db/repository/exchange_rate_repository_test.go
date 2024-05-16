@@ -63,12 +63,11 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestNewGoDocDBExchangeRateR
 		collectionName:  suite.collectionName,
 	}
 
-	repository, err := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		testCase.database,
 		testCase.client,
 	)
 
-	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), repository)
 	assert.Equal(suite.T(), testCase.database, repository.database)
 	assert.Equal(suite.T(), testCase.client, repository.client)
@@ -77,7 +76,7 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestNewGoDocDBExchangeRateR
 }
 
 func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestInit() {
-	repository, _ := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		suite.databaseName,
 		suite.client,
 	)
@@ -88,7 +87,7 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestInit() {
 }
 
 func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestCreateCollectionIfNotExists() {
-	repository, _ := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		suite.databaseName,
 		suite.client,
 	)
@@ -100,7 +99,7 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestCreateCollectionIfNotEx
 }
 
 func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestCreateCollectionIfNotExistsWhenCollectionAlreadyExists() {
-	repository, _ := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		suite.databaseName,
 		suite.client,
 	)
@@ -117,16 +116,15 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestCreateCollectionIfNotEx
 }
 
 func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestSave() {
-	repository, err := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		suite.databaseName,
 		suite.client,
 	)
-	assert.Nil(suite.T(), err)
 
 	repository.init()
 	assert.Equal(suite.T(), true, repository.collectionCreated)
 
-	err = repository.Save(suite.currencyInfoData)
+	err := repository.Save(suite.currencyInfoData)
 	assert.Nil(suite.T(), err)
 
 	results, err := suite.client.FindAll(suite.collectionName)
@@ -135,13 +133,12 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestSave() {
 }
 
 func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestSaveWhenCollectionNotCreated() {
-	repository, err := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		suite.databaseName,
 		suite.client,
 	)
-	assert.Nil(suite.T(), err)
 
-	err = repository.Save(suite.currencyInfoData)
+	err := repository.Save(suite.currencyInfoData)
 	assert.Nil(suite.T(), err)
 
 	results, err := suite.client.FindAll(suite.collectionName)
@@ -150,16 +147,15 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestSaveWhenCollectionNotCr
 }
 
 func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestSaveWhenAlreadyexists() {
-	repository, err := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		suite.databaseName,
 		suite.client,
 	)
-	assert.Nil(suite.T(), err)
 
 	repository.init()
 	assert.Equal(suite.T(), true, repository.collectionCreated)
 
-	err = repository.Save(suite.currencyInfoData)
+	err := repository.Save(suite.currencyInfoData)
 	assert.Nil(suite.T(), err)
 
 	results, err := suite.client.FindAll(suite.collectionName)
@@ -175,16 +171,15 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestSaveWhenAlreadyexists()
 }
 
 func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestFindAll() {
-	repository, err := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		suite.databaseName,
 		suite.client,
 	)
-	assert.Nil(suite.T(), err)
 
 	repository.init()
 	assert.Equal(suite.T(), true, repository.collectionCreated)
 
-	err = repository.Save(suite.currencyInfoData)
+	err := repository.Save(suite.currencyInfoData)
 	assert.Nil(suite.T(), err)
 
 	results, err := repository.FindAll()
@@ -206,16 +201,15 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestFindAll() {
 }
 
 func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestFindByID() {
-	repository, err := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		suite.databaseName,
 		suite.client,
 	)
-	assert.Nil(suite.T(), err)
 
 	repository.init()
 	assert.Equal(suite.T(), true, repository.collectionCreated)
 
-	err = repository.Save(suite.currencyInfoData)
+	err := repository.Save(suite.currencyInfoData)
 	assert.Nil(suite.T(), err)
 
 	result, err := repository.FindByID(suite.currencyInfoData.ID)
@@ -236,16 +230,15 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestFindByID() {
 }
 
 func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestFind() {
-	repository, err := NewExchangeRateRepository(
+	repository := NewExchangeRateRepository(
 		suite.databaseName,
 		suite.client,
 	)
-	assert.Nil(suite.T(), err)
 
 	repository.init()
 	assert.Equal(suite.T(), true, repository.collectionCreated)
 
-	err = repository.Save(suite.currencyInfoData)
+	err := repository.Save(suite.currencyInfoData)
 	assert.Nil(suite.T(), err)
 
 	results, err := repository.Find(suite.currencyInfoData.Code, suite.currencyInfoData.CodeIn)

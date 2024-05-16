@@ -1,5 +1,3 @@
-version: '3'
-
 services:
 #   rabbitmq:
 #     image: rabbitmq:3-management
@@ -25,7 +23,7 @@ services:
     ports:
       - 8080:8000
     networks:
-      - nx-events-lake-network
+      - master-go-expert-networks
 
 networks:
   master-go-expert-networks:
