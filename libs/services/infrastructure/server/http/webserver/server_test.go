@@ -15,8 +15,10 @@ type HTTPServerTestSuite struct {
 	server *Server
 }
 
+
+
 func (suite *HTTPServerTestSuite) SetupTest() {
-	suite.server = NewWebServer(":8080")
+	suite.server = NewWebServer(":40")
 	suite.server.ConfigureDefaults()
 }
 
@@ -69,6 +71,7 @@ func (suite *HTTPServerTestSuite) TestServerStart() {
 		err := suite.server.Start()
 		assert.Nil(suite.T(), err)
 	}()
+	// defer suite.server.Stop()
 }
 
 func (suite *HTTPServerTestSuite) TestStartHandler() {

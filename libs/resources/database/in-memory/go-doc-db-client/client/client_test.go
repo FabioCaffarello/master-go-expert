@@ -79,12 +79,14 @@ func (suite *InMemoryDocDBClientTestSuite) TestClientGetCollection() {
 }
 
 func (suite *InMemoryDocDBClientTestSuite) TestClientDropCollection() {
+	// Create collections
 	err := suite.client.CreateCollection(suite.collectionName1)
 	assert.Nil(suite.T(), err)
 
 	err = suite.client.CreateCollection(suite.collectionName2)
 	assert.Nil(suite.T(), err)
 
+	// Drop existing collections
 	err = suite.client.DropCollection(suite.collectionName1)
 	assert.Nil(suite.T(), err)
 
@@ -92,6 +94,11 @@ func (suite *InMemoryDocDBClientTestSuite) TestClientDropCollection() {
 	assert.Nil(suite.T(), err)
 
 	assert.Equal(suite.T(), 0, len(suite.db.Collections))
+
+	// Attempt to drop a non-existent collection
+	err = suite.client.DropCollection("nonExistentCollection")
+	assert.NotNil(suite.T(), err)
+	assert.Equal(suite.T(), "collection nonExistentCollection does not exist", err.Error())
 }
 
 func (suite *InMemoryDocDBClientTestSuite) TestClientListCollections() {
@@ -358,6 +365,7 @@ func (suite *InMemoryDocDBClientTestSuite) TestClientUpdateOneInvalidUpdate() {
 }
 
 func (suite *InMemoryDocDBClientTestSuite) TestClientDeleteAll() {
+	// Create a collection and insert documents
 	err := suite.client.CreateCollection(suite.collectionName1)
 	assert.Nil(suite.T(), err)
 
@@ -367,12 +375,18 @@ func (suite *InMemoryDocDBClientTestSuite) TestClientDeleteAll() {
 	err = suite.client.InsertOne(suite.collectionName1, suite.document2)
 	assert.Nil(suite.T(), err)
 
+	// Delete all documents in the existing collection
 	err = suite.client.DeleteAll(suite.collectionName1)
 	assert.Nil(suite.T(), err)
 
 	documents, err := suite.client.FindAll(suite.collectionName1)
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), 0, len(documents))
+
+	// Attempt to delete all documents in a non-existent collection
+	err = suite.client.DeleteAll("nonExistentCollection")
+	assert.NotNil(suite.T(), err)
+	assert.Equal(suite.T(), "collection nonExistentCollection does not exist", err.Error())
 }
 
 func (suite *InMemoryDocDBClientTestSuite) TestClientDeleteAllError() {

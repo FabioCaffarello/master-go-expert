@@ -51,11 +51,11 @@ func (r *ExchangeRateRepository) createCollectionIfNotExists() error {
 	return nil
 }
 
-func (r *ExchangeRateRepository) Save(curruncyInfo *entity.CurrencyInfo) error {
+func (r *ExchangeRateRepository) Save(currencyInfo *entity.CurrencyInfo) error {
 	log.Printf("Saving exchange rate to collection: %v", r.collectionName)
 	r.init()
-	curruncyInfoMap := curruncyInfo.ToMap()
-	err := r.client.InsertOne(r.collectionName, curruncyInfoMap)
+	currencyInfoMap := currencyInfo.ToMap()
+	err := r.client.InsertOne(r.collectionName, currencyInfoMap)
 	if err != nil {
 		log.Printf("Error saving exchange rate: %v", err)
 		return err

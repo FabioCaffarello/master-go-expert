@@ -2,6 +2,7 @@ package client
 
 import (
 	"errors"
+	"fmt"
 	"libs/resources/database/in-memory/go-doc-db/database"
 )
 
@@ -22,7 +23,7 @@ func (c *Client) getCollection(
 ) (*database.Collection, error) {
 	collection, err := c.db.GetCollection(collectionName)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("collection %s does not exist", collectionName)
 	}
 	return collection, nil
 }
@@ -37,16 +38,16 @@ func (c *Client) CreateCollection(
 	return nil
 }
 
-func (c *Client) DropCollection(
-	collectionName string,
-) error {
+func (c *Client) DropCollection(collectionName string) error {
+	if _, exists := c.db.Collections[collectionName]; !exists {
+		return fmt.Errorf("collection %s does not exist", collectionName)
+	}
 	err := c.db.DropCollection(collectionName)
 	if err != nil {
 		return err
 	}
 	return nil
 }
-
 func (c *Client) ListCollections() []string {
 	return c.db.ListCollections()
 }
@@ -133,7 +134,7 @@ func (c *Client) UpdateOne(
 	if err != nil {
 		return err
 	}
-	if update == nil || len(update) == 0 {
+	if len(update) == 0 {
 		return errors.New("update is empty")
 	}
 	return collection.UpdateOne(id, update)
