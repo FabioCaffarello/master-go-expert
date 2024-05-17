@@ -22,3 +22,10 @@ run:
 
 stop:
 	docker-compose down
+
+
+build-docs:
+	npx nx graph --file=docs/dependency-graph/index.html
+
+serve-doc: build-docs
+	poetry run mkdocs serve

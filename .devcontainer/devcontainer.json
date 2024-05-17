@@ -9,12 +9,16 @@
     "remoteUser": "vscode",
     "postCreateCommand": "/bin/bash ./.devcontainer/postCreateCommand.sh",
     "features": {
-        "ghcr.io/devcontainers/features/go:1": {},        
+        "ghcr.io/devcontainers/features/go:1": {},
         "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {},
         "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-        "ghcr.io/devcontainers/features/node:1": {}
+        "ghcr.io/devcontainers/features/node:1": {},
+        "ghcr.io/devcontainers/features/python:1": {}
     },
-    "forwardPorts": [8080],
+    "forwardPorts": [
+        8080,
+        8000
+    ],
     "customizations": {
         "vscode": {
             "extensions": [
