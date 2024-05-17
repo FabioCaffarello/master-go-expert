@@ -20,6 +20,13 @@
         "command": "go mod tidy",
         "cwd": "{projectRoot}"
       }
-    }
+    },
+	"godoc": {
+	  "executor": "nx:run-commands",
+	  "options": {
+		"command": "golds -gen -dir .",
+		"cwd": "{projectRoot}"
+	  }
+	}
   }
 }
