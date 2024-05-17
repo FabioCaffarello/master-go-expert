@@ -21,12 +21,12 @@
         "cwd": "{projectRoot}"
       }
     },
-	"godoc": {
-	  "executor": "nx:run-commands",
-	  "options": {
-		"command": "golds -gen -dir .",
-		"cwd": "{projectRoot}"
-	  }
-	}
+    "godoc": {
+      "executor": "nx:run-commands",
+      "options": {
+      "command": "gomarkdoc --output doc.md .",
+      "cwd": "{projectRoot}"
+      }
+    }
   }
 }
