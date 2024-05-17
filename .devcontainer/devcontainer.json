@@ -26,7 +26,8 @@
                 "ms-azuretools.vscode-docker",
                 "technosophos.vscode-make",
                 "ms-vscode.makefile-tools",
-                "nrwl.angular-console"
+                "nrwl.angular-console",
+                "shd101wyy.markdown-preview-enhanced"
             ]
         }
     }
