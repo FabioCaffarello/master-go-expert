@@ -10,6 +10,7 @@ var (
 	collectionName = "currency-info"
 )
 
+// ExchangeRateRepository handles the CRUD operations for exchange rate entities using the in-memory database client.
 type ExchangeRateRepository struct {
 	database          string
 	client            *client.Client
@@ -17,6 +18,7 @@ type ExchangeRateRepository struct {
 	collectionCreated bool
 }
 
+// NewExchangeRateRepository creates and returns a new ExchangeRateRepository instance.
 func NewExchangeRateRepository(
 	database string,
 	client *client.Client,
@@ -29,14 +31,14 @@ func NewExchangeRateRepository(
 	}
 }
 
-// init initializes the repository by ensuring the collection exists
+// init initializes the repository by ensuring the collection exists.
 func (r *ExchangeRateRepository) init() {
 	if err := r.createCollectionIfNotExists(); err != nil {
 		log.Fatal(err)
 	}
 }
 
-// CreateCollectionIfNotExists checks if the collection is already created, if not then creates it
+// createCollectionIfNotExists checks if the collection is already created, if not then creates it.
 func (r *ExchangeRateRepository) createCollectionIfNotExists() error {
 	if !r.collectionCreated {
 		err := r.client.CreateCollection(r.collectionName)
@@ -50,6 +52,7 @@ func (r *ExchangeRateRepository) createCollectionIfNotExists() error {
 	return nil
 }
 
+// Save saves the given currency info entity into the collection.
 func (r *ExchangeRateRepository) Save(currencyInfo *entity.CurrencyInfo) error {
 	log.Printf("Saving exchange rate to collection: %v", r.collectionName)
 	r.init()
@@ -62,6 +65,7 @@ func (r *ExchangeRateRepository) Save(currencyInfo *entity.CurrencyInfo) error {
 	return nil
 }
 
+// FindAll retrieves all exchange rate entities from the collection.
 func (r *ExchangeRateRepository) FindAll() ([]*entity.CurrencyInfo, error) {
 	log.Printf("Finding all exchange rates from collection: %v", r.collectionName)
 	r.init()
@@ -82,6 +86,7 @@ func (r *ExchangeRateRepository) FindAll() ([]*entity.CurrencyInfo, error) {
 	return currencyInfos, nil
 }
 
+// FindByID retrieves a single exchange rate entity by its ID from the collection.
 func (r *ExchangeRateRepository) FindByID(id string) (*entity.CurrencyInfo, error) {
 	log.Printf("Finding exchange rate by ID from collection: %v", r.collectionName)
 	r.init()
@@ -98,6 +103,7 @@ func (r *ExchangeRateRepository) FindByID(id string) (*entity.CurrencyInfo, erro
 	return result, nil
 }
 
+// Find retrieves exchange rate entities by their code and codeIn from the collection.
 func (r *ExchangeRateRepository) Find(code string, codeIn string) ([]*entity.CurrencyInfo, error) {
 	log.Printf("Finding exchange rate by code from collection: %v", r.collectionName)
 	r.init()
@@ -124,6 +130,7 @@ func (r *ExchangeRateRepository) Find(code string, codeIn string) ([]*entity.Cur
 	return currencyInfos, nil
 }
 
+// Delete removes a single exchange rate entity by its ID from the collection.
 func (r *ExchangeRateRepository) Delete(id string) error {
 	log.Printf("Deleting exchange rate by ID from collection: %v", r.collectionName)
 	r.init()

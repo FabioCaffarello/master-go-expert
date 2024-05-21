@@ -9,6 +9,7 @@ import (
 	outputDTO "libs/services/acl/dtos/economia-awesome-api/output"
 )
 
+// Client represents a client for the Economia Awesome API.
 type Client struct {
 	// ctx is the context for API requests.
 	ctx context.Context
@@ -16,11 +17,11 @@ type Client struct {
 	baseURL string
 	// httpClient is the client used to make HTTP requests.
 	httpClient *http.Client
-	// Timeout
+	// Timeout for the API requests.
 	Timeout time.Duration
-
 }
 
+// NewClient creates and returns a new Client instance with default settings.
 func NewClient() *Client {
 	return &Client{
 		ctx:        context.Background(),
@@ -30,6 +31,7 @@ func NewClient() *Client {
 	}
 }
 
+// GetExchangeRate fetches the exchange rate for the given exchangeRateName from the Economia Awesome API.
 func (c *Client) GetExchangeRate(exchangeRateName string) (outputDTO.CurrencyInfoMapDTO, error) {
 	pathParams := []string{"json", "last", exchangeRateName}
 	headers := map[string]string{"Content-Type": "application/json"}
@@ -45,7 +47,7 @@ func (c *Client) GetExchangeRate(exchangeRateName string) (outputDTO.CurrencyInf
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var apiOutput outputDTO.CurrencyInfoMapDTO
 	err = gorequest.SendRequest(c.ctx, req, c.httpClient, &apiOutput, c.Timeout)
 	if err != nil {

@@ -8,11 +8,13 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+// Server represents an HTTP server with a router and address.
 type Server struct {
 	router *chi.Mux
 	addr   string
 }
 
+// NewWebServer creates and returns a new Server instance with the specified address.
 func NewWebServer(addr string) *Server {
 	return &Server{
 		router: chi.NewRouter(),
@@ -20,7 +22,7 @@ func NewWebServer(addr string) *Server {
 	}
 }
 
-// ConfigureDefaults sets up the default middleware for the server.
+// ConfigureDefaults sets up the default middleware for the server, including request ID, real IP, logger, recoverer, and a timeout of 60 seconds.
 func (s *Server) ConfigureDefaults() {
 	middlewares := []func(http.Handler) http.Handler{
 		middleware.RequestID,
@@ -39,8 +41,7 @@ func (s *Server) RegisterMiddlewares(middlewares ...func(http.Handler) http.Hand
 	}
 }
 
-// RegisterRoute adds a new route with an HTTP method, pattern, and handler function.
-// If a group is specified, the route is added to that group.
+// RegisterRoute adds a new route with an HTTP method, pattern, and handler function. If a group is specified, the route is added to that group.
 func (s *Server) RegisterRoute(method, pattern string, handler http.HandlerFunc, group ...string) {
 	if len(group) > 0 && group[0] != "" {
 		r := s.router.Route(group[0], func(r chi.Router) {})
@@ -55,7 +56,7 @@ func (s *Server) RegisterRouteGroup(prefix string, routes func(r chi.Router)) {
 	s.router.Route(prefix, routes)
 }
 
-// Start runs the web server on a specified address.
+// Start runs the web server on the specified address.
 func (s *Server) Start() error {
 	return http.ListenAndServe(s.addr, s.router)
 }

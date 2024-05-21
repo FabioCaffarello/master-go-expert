@@ -7,10 +7,12 @@ import (
 	"net/http"
 )
 
+// WebServiceExchangeRateHandler handles HTTP requests for exchange rate operations.
 type WebServiceExchangeRateHandler struct {
 	ExchangeRateRepository entity.ExchangeRateRepositoryInterface
 }
 
+// NewWebServiceExchangeRateHandler creates and returns a new WebServiceExchangeRateHandler instance.
 func NewWebServiceExchangeRateHandler(
 	exchangeRateRepository entity.ExchangeRateRepositoryInterface,
 ) *WebServiceExchangeRateHandler {
@@ -19,6 +21,8 @@ func NewWebServiceExchangeRateHandler(
 	}
 }
 
+// ListCurrentExchangeRate handles HTTP GET requests to list the current exchange rate.
+// It expects "code" and "code_in" query parameters, defaulting to "USD" and "BRL" respectively if not provided.
 func (h *WebServiceExchangeRateHandler) ListCurrentExchangeRate(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query().Get("code")
 	codeIn := r.URL.Query().Get("code_in")

@@ -1,4 +1,4 @@
-site_name: Nx Events Lake
+site_name: Master Go Expert
 
 repo_url: https://github.com/FabioCaffarello/master-go-expert
 edit_uri: src/main/docs/
@@ -59,4 +59,3 @@ markdown_extensions:
       permalink: ''
   # - plantuml_markdown:
   #     server: http://localhost:8080
-  

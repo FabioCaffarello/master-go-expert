@@ -8,11 +8,13 @@ import (
 	"log"
 )
 
+// GetExchangeRateUseCase represents a use case for fetching and saving exchange rates.
 type GetExchangeRateUseCase struct {
 	repository               entity.ExchangeRateRepositoryInterface
 	economiaAwesomeApiClient *client.Client
 }
 
+// NewGetExchangeRateUseCase creates and returns a new GetExchangeRateUseCase instance.
 func NewGetExchangeRateUseCase(
 	repository entity.ExchangeRateRepositoryInterface,
 ) *GetExchangeRateUseCase {
@@ -22,6 +24,7 @@ func NewGetExchangeRateUseCase(
 	}
 }
 
+// Execute fetches the exchange rate for the given currency codes, saves it to the repository, and returns the exchange rate data.
 func (u *GetExchangeRateUseCase) Execute(code, codeIn string) (outputDTO.ExchangeRatesDTO, error) {
 	if code == "" || codeIn == "" {
 		return outputDTO.ExchangeRatesDTO{}, errors.New("currency codes cannot be empty")

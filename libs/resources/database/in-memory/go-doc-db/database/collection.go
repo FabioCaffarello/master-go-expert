@@ -5,22 +5,27 @@ import (
 	"sync"
 )
 
+// DocumentID represents the unique identifier for a document.
 type DocumentID string
+
+// Document represents a document as a map with string keys and interface{} values.
 type Document map[string]interface{}
+
+// Collection represents a collection of documents with thread-safe operations.
 type Collection struct {
 	data map[string]Document
 	mu   sync.RWMutex
 }
 
+// NewCollection creates and returns a new Collection instance.
 func NewCollection() *Collection {
 	return &Collection{
 		data: make(map[string]Document),
 	}
 }
 
-func (c *Collection) InsertOne(
-	document Document,
-) error {
+// InsertOne inserts a single document into the collection.
+func (c *Collection) InsertOne(document Document) error {
 	c.mu.Lock() // Lock for writing
 	defer c.mu.Unlock()
 
@@ -40,9 +45,8 @@ func (c *Collection) InsertOne(
 	return nil
 }
 
-func (c *Collection) FindOne(
-	id string,
-) (Document, error) {
+// FindOne finds and returns a single document by its ID.
+func (c *Collection) FindOne(id string) (Document, error) {
 	c.mu.RLock() // Lock for reading
 	defer c.mu.RUnlock()
 
@@ -53,6 +57,7 @@ func (c *Collection) FindOne(
 	return document, nil
 }
 
+// FindAll returns all documents in the collection.
 func (c *Collection) FindAll() []Document {
 	c.mu.RLock() // Lock for reading
 	defer c.mu.RUnlock()
@@ -100,9 +105,8 @@ func (c *Collection) Find(query map[string]interface{}) []Document {
 	return documents
 }
 
-func (c *Collection) DeleteOne(
-	id string,
-) error {
+// DeleteOne deletes a single document by its ID.
+func (c *Collection) DeleteOne(id string) error {
 	c.mu.Lock() // Lock for writing
 	defer c.mu.Unlock()
 	_, ok := c.data[id]
@@ -113,10 +117,8 @@ func (c *Collection) DeleteOne(
 	return nil
 }
 
-func (c *Collection) UpdateOne(
-	id string,
-	update Document,
-) error {
+// UpdateOne updates a single document by its ID with the given update.
+func (c *Collection) UpdateOne(id string, update Document) error {
 	c.mu.Lock() // Lock for writing
 	defer c.mu.Unlock()
 	_, ok := c.data[id]
@@ -129,6 +131,7 @@ func (c *Collection) UpdateOne(
 	return nil
 }
 
+// DeleteAll deletes all documents in the collection.
 func (c *Collection) DeleteAll() error {
 	c.mu.Lock() // Lock for writing
 	defer c.mu.Unlock()

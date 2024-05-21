@@ -6,21 +6,20 @@ import (
 	"libs/resources/database/in-memory/go-doc-db/database"
 )
 
+// Client provides an interface to interact with the in-memory document database.
 type Client struct {
 	db *database.InMemoryDocBD
 }
 
-func NewClient(
-	db *database.InMemoryDocBD,
-) *Client {
+// NewClient creates and returns a new Client instance.
+func NewClient(db *database.InMemoryDocBD) *Client {
 	return &Client{
 		db: db,
 	}
 }
 
-func (c *Client) getCollection(
-	collectionName string,
-) (*database.Collection, error) {
+// getCollection retrieves a collection by its name. Returns an error if the collection does not exist.
+func (c *Client) getCollection(collectionName string) (*database.Collection, error) {
 	collection, err := c.db.GetCollection(collectionName)
 	if err != nil {
 		return nil, fmt.Errorf("collection %s does not exist", collectionName)
@@ -28,9 +27,8 @@ func (c *Client) getCollection(
 	return collection, nil
 }
 
-func (c *Client) CreateCollection(
-	collectionName string,
-) error {
+// CreateCollection creates a new collection with the given name. Returns an error if the collection already exists.
+func (c *Client) CreateCollection(collectionName string) error {
 	err := c.db.CreateCollection(collectionName)
 	if err != nil {
 		return err
@@ -38,6 +36,7 @@ func (c *Client) CreateCollection(
 	return nil
 }
 
+// DropCollection drops a collection by its name. Returns an error if the collection does not exist.
 func (c *Client) DropCollection(collectionName string) error {
 	if _, exists := c.db.Collections[collectionName]; !exists {
 		return fmt.Errorf("collection %s does not exist", collectionName)
@@ -48,13 +47,14 @@ func (c *Client) DropCollection(collectionName string) error {
 	}
 	return nil
 }
+
+// ListCollections lists the names of all collections in the database.
 func (c *Client) ListCollections() []string {
 	return c.db.ListCollections()
 }
 
-func (c *Client) ConvertToDocument(
-	document map[string]interface{},
-) (database.Document, error) {
+// ConvertToDocument converts a map to a Document type. Returns an error if the document is nil or the _id field is missing.
+func (c *Client) ConvertToDocument(document map[string]interface{}) (database.Document, error) {
 	if document == nil {
 		return nil, errors.New("document is nil")
 	}
@@ -64,10 +64,8 @@ func (c *Client) ConvertToDocument(
 	return database.Document(document), nil
 }
 
-func (c *Client) InsertOne(
-	collectionName string,
-	document map[string]interface{},
-) error {
+// InsertOne inserts a single document into the specified collection. Returns an error if the collection does not exist or the document is invalid.
+func (c *Client) InsertOne(collectionName string, document map[string]interface{}) error {
 	collection, err := c.getCollection(collectionName)
 	if err != nil {
 		return err
@@ -79,10 +77,8 @@ func (c *Client) InsertOne(
 	return collection.InsertOne(doc)
 }
 
-func (c *Client) FindOne(
-	collectionName string,
-	id string,
-) (map[string]interface{}, error) {
+// FindOne finds and returns a single document by its ID from the specified collection. Returns an error if the collection or document does not exist.
+func (c *Client) FindOne(collectionName string, id string) (map[string]interface{}, error) {
 	collection, err := c.getCollection(collectionName)
 	if err != nil {
 		return nil, err
@@ -94,9 +90,8 @@ func (c *Client) FindOne(
 	return map[string]interface{}(doc), nil
 }
 
-func (c *Client) FindAll(
-	collectionName string,
-) ([]map[string]interface{}, error) {
+// FindAll returns all documents from the specified collection. Returns an error if the collection does not exist.
+func (c *Client) FindAll(collectionName string) ([]map[string]interface{}, error) {
 	collection, err := c.getCollection(collectionName)
 	if err != nil {
 		return nil, err
@@ -109,10 +104,8 @@ func (c *Client) FindAll(
 	return documents, nil
 }
 
-func (c *Client) Find(
-	collectionName string,
-	filter map[string]interface{},
-) ([]map[string]interface{}, error) {
+// Find returns documents matching the given query from the specified collection. Returns an error if the collection does not exist.
+func (c *Client) Find(collectionName string, filter map[string]interface{}) ([]map[string]interface{}, error) {
 	collection, err := c.getCollection(collectionName)
 	if err != nil {
 		return nil, err
@@ -125,11 +118,8 @@ func (c *Client) Find(
 	return documents, nil
 }
 
-func (c *Client) UpdateOne(
-	collectionName string,
-	id string,
-	update map[string]interface{},
-) error {
+// UpdateOne updates a single document by its ID with the given update in the specified collection. Returns an error if the collection or document does not exist.
+func (c *Client) UpdateOne(collectionName string, id string, update map[string]interface{}) error {
 	collection, err := c.getCollection(collectionName)
 	if err != nil {
 		return err
@@ -140,10 +130,8 @@ func (c *Client) UpdateOne(
 	return collection.UpdateOne(id, update)
 }
 
-func (c *Client) DeleteOne(
-	collectionName string,
-	id string,
-) error {
+// DeleteOne deletes a single document by its ID from the specified collection. Returns an error if the collection or document does not exist.
+func (c *Client) DeleteOne(collectionName string, id string) error {
 	collection, err := c.getCollection(collectionName)
 	if err != nil {
 		return err
@@ -151,9 +139,8 @@ func (c *Client) DeleteOne(
 	return collection.DeleteOne(id)
 }
 
-func (c *Client) DeleteAll(
-	collectionName string,
-) error {
+// DeleteAll deletes all documents from the specified collection. Returns an error if the collection does not exist.
+func (c *Client) DeleteAll(collectionName string) error {
 	collection, err := c.getCollection(collectionName)
 	if err != nil {
 		return err
