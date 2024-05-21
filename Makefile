@@ -23,10 +23,12 @@ run:
 stop:
 	docker-compose down
 
-
 build-docs:
 	npx nx graph --file=docs/dependency-graph/index.html
 	npx nx  run-many --target=godoc --all
 
 serve-doc: build-docs
 	poetry run mkdocs serve
+
+deploy-doc: build-docs
+	poetry run mkdocs gh-deploy

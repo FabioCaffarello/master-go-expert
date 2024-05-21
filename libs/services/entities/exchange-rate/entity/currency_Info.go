@@ -17,6 +17,7 @@ var (
 	errTimestampRequired = errors.New("timestamp is required")
 )
 
+// CurrencyInfo represents the exchange rate information for a currency pair.
 type CurrencyInfo struct {
 	ID         gouuid.ID `json:"_id"`
 	Code       string    `json:"code"`
@@ -32,6 +33,9 @@ type CurrencyInfo struct {
 	CreateDate time.Time `json:"create_date"`
 }
 
+// NewExchangeRate creates a new CurrencyInfo entity from string inputs.
+// It converts string inputs to appropriate data types, validates them,
+// and initializes a new CurrencyInfo object.
 func NewExchangeRate(
 	code string,
 	codeIn string,
@@ -104,6 +108,8 @@ func NewExchangeRate(
 	return currencyInfo, nil
 }
 
+// setCreateDate sets the create date of the CurrencyInfo object
+// by parsing the input string to a time.Time object.
 func (e *CurrencyInfo) setCreateDate(createDate string) error {
 	layout := "2006-01-02 15:04:05"
 	parsedTime, err := time.Parse(layout, createDate)
@@ -114,6 +120,8 @@ func (e *CurrencyInfo) setCreateDate(createDate string) error {
 	return nil
 }
 
+// setEntityID sets the ID of the CurrencyInfo object
+// using the code, codeIn, and timestamp properties.
 func (e *CurrencyInfo) setEntityID(code string, codeIn string, timestamp string) error {
 	propertiesID := map[string]interface{}{
 		"code":      code,
@@ -128,6 +136,7 @@ func (e *CurrencyInfo) setEntityID(code string, codeIn string, timestamp string)
 	return nil
 }
 
+// isValid validates the essential fields of the CurrencyInfo object.
 func (e *CurrencyInfo) isValid() error {
 	if e.ID == "" {
 		return errIDRequired
@@ -147,6 +156,7 @@ func (e *CurrencyInfo) isValid() error {
 	return nil
 }
 
+// ToMap converts the CurrencyInfo object to a map representation.
 func (e *CurrencyInfo) ToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"_id":         string(e.ID),
@@ -164,6 +174,8 @@ func (e *CurrencyInfo) ToMap() map[string]interface{} {
 	}
 }
 
+// MapToCurrencyInfoEntity converts a map representation of a CurrencyInfo object
+// back to a CurrencyInfo entity.
 func MapToCurrencyInfoEntity(document map[string]interface{}) (*CurrencyInfo, error) {
 	var documentEntity CurrencyInfo
 	documentBytes, err := json.Marshal(document)

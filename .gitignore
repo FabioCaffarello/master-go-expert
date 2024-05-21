@@ -2,6 +2,8 @@
 
 # docs
 docs/dependency-graph
+site
+/**/docs/*.md
 
 
 # compiled output
