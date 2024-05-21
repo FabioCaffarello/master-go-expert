@@ -8,7 +8,8 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  contents: write
+  pages: write
 
 
 jobs:
@@ -58,9 +59,6 @@ jobs:
       - name: Build Requirements for doc deploy
         run: make build-docs
 
-    #   - name: Generate documentation stubs
-    #     run: poetry run python ./docs/gen_doc_stubs.py
-
       - name: Configure Git for Deployment
         run: |
           git config --global user.name "github-actions[bot]"
@@ -68,5 +66,7 @@ jobs:
           git remote set-url origin https://${{ secrets.CI_BOT_TOKEN }}@github.com/${{ github.repository }}.git
 
       - name: Doc deployment
-        run: poetry run mkdocs gh-deploy
+        run: |
+          git checkout -b gh-pages
+          poetry run mkdocs gh-deploy --force --remote-name origin --remote-branch gh-pages
 
