@@ -56,5 +56,8 @@ jobs:
       - name: Build Requirements for doc deploy
         run: make build-docs
 
+      - name: Generate documentation stubs
+        run: poetry run python ./docs/gen_doc_stubs.py
+
       - name: Doc deployment
         run: poetry run mkdocs gh-deploy --strict --force
