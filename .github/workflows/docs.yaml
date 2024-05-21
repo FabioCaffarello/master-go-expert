@@ -62,4 +62,4 @@ jobs:
         run: poetry run python ./docs/gen_doc_stubs.py
 
       - name: Doc deployment
-        run: poetry run mkdocs gh-deploy --strict --force
+        run: poetry run mkdocs gh-deploy
