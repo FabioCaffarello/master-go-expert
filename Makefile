@@ -26,6 +26,7 @@ stop:
 
 build-docs:
 	npx nx graph --file=docs/dependency-graph/index.html
+	npx nx godoc --target=test --all
 
 serve-doc: build-docs
 	poetry run mkdocs serve

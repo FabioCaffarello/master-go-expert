@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// ID is a unique identifier generated based on the provided properties.
 type ID = string
 
 // GetID generates a unique ID based on the provided properties.

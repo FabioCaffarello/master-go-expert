@@ -17,6 +17,7 @@ var (
 	defaultContentType = "application/json"
 )
 
+// parseBaseURL parses the given base URL and returns a parsed *url.URL or an error if the URL is invalid.
 func parseBaseURL(baseURL string) (*url.URL, error) {
 	parsedURL, err := url.Parse(baseURL)
 	if err != nil {
@@ -28,6 +29,8 @@ func parseBaseURL(baseURL string) (*url.URL, error) {
 	return parsedURL, nil
 }
 
+// buildURL constructs a full URL with the given base URL, path parameters, and query parameters.
+// Returns the full URL as a string or an error if any component is invalid.
 func buildURL(baseURL string, pathParams []string, queryParams map[string]string) (string, error) {
 	// Parse the base URL
 	parsedURL, err := parseBaseURL(baseURL)
@@ -51,6 +54,8 @@ func buildURL(baseURL string, pathParams []string, queryParams map[string]string
 	return parsedURL.String(), nil
 }
 
+// marshalBody marshals the given body into bytes based on the specified content type.
+// Supports JSON, XML, and URL-encoded forms. Returns the marshaled bytes or an error if the content type is unsupported.
 func marshalBody(body interface{}, contentType string) ([]byte, error) {
 	if body == nil {
 		return []byte{}, nil
@@ -68,12 +73,14 @@ func marshalBody(body interface{}, contentType string) ([]byte, error) {
 	}
 }
 
+// setHeaders sets the provided headers on the given HTTP request.
 func setHeaders(req *http.Request, headers map[string]string) {
 	for key, value := range headers {
 		req.Header.Set(key, value)
 	}
 }
 
+// setQueryParams adds the given query parameters to the URL.
 func setQueryParams(parsedURL *url.URL, queryParams map[string]string) {
 	query := parsedURL.Query()
 	for key, value := range queryParams {
@@ -82,6 +89,7 @@ func setQueryParams(parsedURL *url.URL, queryParams map[string]string) {
 	parsedURL.RawQuery = query.Encode()
 }
 
+// setPathParams appends the given path parameters to the URL path.
 func setPathParams(parsedURL *url.URL, pathParams []string) error {
 	var err error
 	joinedPathParams := strings.Join(pathParams, "/")
@@ -92,6 +100,7 @@ func setPathParams(parsedURL *url.URL, pathParams []string) error {
 	return nil
 }
 
+// getContentType retrieves the Content-Type from the headers or sets and returns the default content type.
 func getContentType(headers map[string]string) string {
 	if contentType, ok := headers["Content-Type"]; ok {
 		return contentType
@@ -100,10 +109,13 @@ func getContentType(headers map[string]string) string {
 	return defaultContentType
 }
 
+// setHeaderDefaultContentType sets the Content-Type header to the default content type.
 func setHeaderDefaultContentType(headers map[string]string, contentType string) {
 	headers["Content-Type"] = contentType
 }
 
+// CreateRequest creates an HTTP request with the given parameters.
+// It builds the URL, marshals the body, and sets the headers. Returns the constructed *http.Request or an error.
 func CreateRequest(
 	ctx context.Context,
 	baseUrl string,
@@ -135,6 +147,9 @@ func CreateRequest(
 	return req, nil
 }
 
+// SendRequest sends the given HTTP request using the provided client.
+// It waits for the response or times out after the specified duration. The response body is decoded into the result parameter.
+// Returns an error if the request fails, times out, or the response status is not 2xx.
 func SendRequest(
 	ctx context.Context,
 	req *http.Request,
@@ -142,13 +157,11 @@ func SendRequest(
 	result interface{},
 	timeout time.Duration,
 ) error {
-
 	type responseResult struct {
 		resp *http.Response
 		err  error
 	}
 
-	// Create a context with the specified timeout
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 

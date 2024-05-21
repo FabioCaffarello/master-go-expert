@@ -16,6 +16,8 @@ for path in src_root.rglob("project.json"):
             f"{project_path}/docs/openapi/*.json",
             f"{project_path}/docs/openapi/*.yml",
             f"{project_path}/docs/openapi/*.md",
+			# godoc
+            f"{project_path}/docs/*.md",
 
             # Markdowns
             f"{project_path}/*.md",

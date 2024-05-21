@@ -10,6 +10,13 @@
     },
     "lint": {
       "executor": "@nx-go/nx-go:lint"
+    },
+    "godoc": {
+      "executor": "nx:run-commands",
+      "options": {
+      "command": "gomarkdoc --output docs/godoc.md ./...",
+      "cwd": "{projectRoot}"
+      }
     }
   }
 }

@@ -1,5 +1,6 @@
 package outputdto
 
+// ExchangeRateDTO is a data transfer object that represents the exchange rate api output.
 type ExchangeRateDTO struct {
 	Code       string  `json:"code"`
 	CodeIn     string  `json:"codein"`
@@ -14,4 +15,5 @@ type ExchangeRateDTO struct {
 	CreateDate string  `json:"create_date"`
 }
 
+// ExchangeRatesDTO is a data transfer object that represents a map of exchange rates.
 type ExchangeRatesDTO map[string]ExchangeRateDTO
