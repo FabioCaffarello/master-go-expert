@@ -61,11 +61,12 @@ jobs:
     #   - name: Generate documentation stubs
     #     run: poetry run python ./docs/gen_doc_stubs.py
 
-      - name: Doc deployment
-        env:
-          GH_TOKEN: ${{ secrets.CI_BOT_TOKEN }}
+      - name: Configure Git for Deployment
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          poetry run mkdocs gh-deploy --remote-name origin --remote-branch gh-pages --token $CI_BOT_TOKEN
+          git remote set-url origin https://${{ secrets.CI_BOT_TOKEN }}@github.com/${{ github.repository }}.git
+
+      - name: Doc deployment
+        run: poetry run mkdocs gh-deploy
 
