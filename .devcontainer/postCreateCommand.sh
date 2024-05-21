@@ -14,7 +14,7 @@ echo "npm run prepare succeeded"
 ## Dependency Injection
 go install github.com/google/wire/cmd/wire@latest || { echo "go install failed"; exit 1; }
 ## Documentation
-go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest
+go install github.com/princjef/gomarkdoc/cmd/gomarkdoc@latest || { echo "go install failed"; exit 1; }
 
 echo "go install succeeded"
 
