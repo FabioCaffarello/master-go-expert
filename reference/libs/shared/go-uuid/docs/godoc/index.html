@@ -128,7 +128,7 @@
         </a>
 </li>
 <li class="md-tabs__item">
-<a class="md-tabs__link" href="../../../../../../dependency-graph/index.html?select=all">
+<a class="md-tabs__link" href="../../../../../../dependency-graph/index.html?select=all#/projects/all?groupByFolder=true">
         
   
     
@@ -359,6 +359,68 @@
 </ul>
 </nav>
 </li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_1_2" id="__nav_3_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Entities
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_1_2_label" class="md-nav" data-md-level="3">
+<label class="md-nav__title" for="__nav_3_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Entities
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3_1_2_1" type="checkbox"/>
+<div class="md-nav__link md-nav__container">
+<a class="md-nav__link" href="../../../../services/entities/exchange-rate/">
+<span class="md-ellipsis">
+    Exchange rate
+  </span>
+</a>
+<label class="md-nav__link" for="__nav_3_1_2_1" id="__nav_3_1_2_1_label" tabindex="0">
+<span class="md-nav__icon md-icon"></span>
+</label>
+</div>
+<nav aria-expanded="false" aria-labelledby="__nav_3_1_2_1_label" class="md-nav" data-md-level="4">
+<label class="md-nav__title" for="__nav_3_1_2_1">
+<span class="md-nav__icon md-icon"></span>
+            Exchange rate
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3_1_2_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_1_2_1_2" id="__nav_3_1_2_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    Docs
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_1_2_1_2_label" class="md-nav" data-md-level="5">
+<label class="md-nav__title" for="__nav_3_1_2_1_2">
+<span class="md-nav__icon md-icon"></span>
+            Docs
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../../services/entities/exchange-rate/docs/godoc/">
+<span class="md-ellipsis">
+    Godoc
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
 </ul>
 </nav>
 </li>
@@ -509,7 +571,7 @@
 </nav>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../../../../dependency-graph/index.html?select=all">
+<a class="md-nav__link" href="../../../../../../dependency-graph/index.html?select=all#/projects/all?groupByFolder=true">
 <span class="md-ellipsis">
     Dependency Graph
   </span>
@@ -567,12 +629,12 @@
 <li><a href="#ID">type ID</a></li>
 </ul>
 <p><a name="GetID"></a></p>
-<h2 id="func-getid">func <a href="https://github.com/FabioCaffarello/master-go-expert/blob/main/libs/shared/go-uuid/uuid.go#L17">GetID</a><a class="headerlink" href="#func-getid" title="Permanent link"></a></h2>
+<h2 id="func-getid">func GetID<a class="headerlink" href="#func-getid" title="Permanent link"></a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kd">func</span><span class="w"> </span><span class="nx">GetID</span><span class="p">(</span><span class="nx">properties</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{})</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">error</span><span class="p">)</span>
 </code></pre></div>
 <p>GetID generates a unique ID based on the provided properties. It serializes the properties to JSON, hashes the resulting byte slice, and generates a UUID from the hash. Returns the generated ID and any error encountered during the process.</p>
 <p><a name="ID"></a></p>
-<h2 id="type-id">type <a href="https://github.com/FabioCaffarello/master-go-expert/blob/main/libs/shared/go-uuid/uuid.go#L12">ID</a><a class="headerlink" href="#type-id" title="Permanent link"></a></h2>
+<h2 id="type-id">type ID<a class="headerlink" href="#type-id" title="Permanent link"></a></h2>
 <p>ID is a unique identifier generated based on the provided properties.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kd">type</span><span class="w"> </span><span class="nx">ID</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kt">string</span>
 </code></pre></div>
