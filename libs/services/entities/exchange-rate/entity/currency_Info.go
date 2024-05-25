@@ -108,6 +108,10 @@ func NewExchangeRate(
 	return currencyInfo, nil
 }
 
+func (e *CurrencyInfo) GetEntityID() string {
+	return string(e.ID)
+}
+
 // setCreateDate sets the create date of the CurrencyInfo object
 // by parsing the input string to a time.Time object.
 func (e *CurrencyInfo) setCreateDate(createDate string) error {

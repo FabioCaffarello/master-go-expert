@@ -163,7 +163,7 @@ func (suite *GoDocDBExchangeRateRepositoryTestSuite) TestSaveWhenAlreadyexists()
 	assert.Equal(suite.T(), 1, len(results))
 
 	err = repository.Save(suite.currencyInfoData)
-	assert.NotNil(suite.T(), err)
+	assert.Nil(suite.T(), err)
 
 	results, err = suite.client.FindAll(suite.collectionName)
 	assert.Nil(suite.T(), err)

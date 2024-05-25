@@ -1,18 +1,23 @@
 go 1.22
 
 use (
+	./chalanges/client-server-api/chalange-client
+	./chalanges/client-server-api/chalange-server
 	./libs/external-clients/economia-awesome-api
 	./libs/resources/database/in-memory/go-doc-db
 	./libs/resources/database/in-memory/go-doc-db-client
+	./libs/resources/database/in-memory/sqlite-client
 	./libs/services/acl/dtos/economia-awesome-api
 	./libs/services/acl/dtos/exchange-rate
 	./libs/services/api-clients/exchange-rate
 	./libs/services/entities/exchange-rate
 	./libs/services/infrastructure/database/repositories/exchange-rate/in-memory/go-doc-db
+	./libs/services/infrastructure/database/repositories/exchange-rate/in-memory/sqlite-db
 	./libs/services/infrastructure/server/http/handlers/exchange-rate
 	./libs/services/infrastructure/server/http/webserver
 	./libs/services/usecases/exchange-rate
 	./libs/shared/go-request
+	./libs/shared/go-sd
 	./libs/shared/go-uuid
 	./services/exchange-rate
 )

@@ -55,9 +55,9 @@
 		},
 		"go-run": {
 			"executor": "nx:run-commands",
-			"dependsOn": ["go-build"],
+			"dependsOn": ["go-tidy", "wire"],
 			"options": {
-				"command": "./dist/server",
+				"command": "go run ./cmd/server/main.go ./cmd/server/wire_gen.go",
 				"cwd": "{projectRoot}"
 			}
 		}

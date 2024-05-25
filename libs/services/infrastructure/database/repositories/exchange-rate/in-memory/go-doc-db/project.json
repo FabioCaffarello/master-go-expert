@@ -24,8 +24,8 @@
     "godoc": {
       "executor": "nx:run-commands",
       "options": {
-      "command": "gomarkdoc --output docs/godoc.md ./...",
-      "cwd": "{projectRoot}"
+		"command": "gomarkdoc --output docs/godoc.md ./...",
+		"cwd": "{projectRoot}"
       }
     }
   }

@@ -1,4 +1,5 @@
 - [Architecture](index.md)
 - [Services](reference/services/)
 - [Libraries](reference/libs/)
+- [Chalanges](reference/chalanges/)
 - [Dependency Graph](dependency-graph/index.html?select=all#/projects/all?groupByFolder=true)

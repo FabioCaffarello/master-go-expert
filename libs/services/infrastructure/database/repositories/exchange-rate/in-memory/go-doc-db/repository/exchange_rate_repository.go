@@ -57,7 +57,13 @@ func (r *ExchangeRateRepository) Save(currencyInfo *entity.CurrencyInfo) error {
 	log.Printf("Saving exchange rate to collection: %v", r.collectionName)
 	r.init()
 	currencyInfoMap := currencyInfo.ToMap()
-	err := r.client.InsertOne(r.collectionName, currencyInfoMap)
+	entityID := currencyInfo.GetEntityID()
+	_, err := r.FindByID(entityID)
+	if err == nil {
+		log.Printf("Exchange rate already exists: %v", entityID)
+		return nil
+	}
+	err = r.client.InsertOne(r.collectionName, currencyInfoMap)
 	if err != nil {
 		log.Printf("Error saving exchange rate: %v", err)
 		return err

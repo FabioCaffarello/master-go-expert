@@ -45,6 +45,7 @@ plugins:
 watch:
   - services
   - libs
+  - chalanges
 
 extra_css:
   - css/github-permalink-style.css

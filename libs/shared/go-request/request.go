@@ -7,6 +7,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -129,6 +130,8 @@ func CreateRequest(
 	if err != nil {
 		return nil, fmt.Errorf("failed to build URL: %w", err)
 	}
+
+	log.Printf("parsedURL: %v", parsedURL)
 
 	contentType := getContentType(headers)
 

@@ -1,0 +1,75 @@
+{
+  "name": "chalanges-client-server-api-chalange-client",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "chalanges/client-server-api/chalange-client",
+  "tags": [
+    "lang:golang",
+    "scope:chalange"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx-go/nx-go:build",
+      "options": {
+        "main": "{projectRoot}/main.go"
+      }
+    },
+    "serve": {
+      "executor": "@nx-go/nx-go:serve",
+      "options": {
+        "main": "{projectRoot}/main.go"
+      }
+    },
+    "test": {
+      "executor": "@nx-go/nx-go:test"
+    },
+    "lint": {
+      "executor": "@nx-go/nx-go:lint"
+    },
+	"win-temp": {
+		"executor": "nx:run-commands",
+		"options": {
+			"command": "echo temp: %USE_HOST_ADDRESS%",
+			"cwd": "{projectRoot}"
+		},
+		"configurations": {
+			"production": {
+				"env": {
+					"ENV": "production",
+					"USE_HOST_ADDRESS": "true"
+				}
+			},
+			"development": {
+				"env": {
+					"USE_HOST_ADDRESS": "true",
+					"ENV": "development"
+				}
+			},
+			"local": {
+				"env": {
+					"USE_HOST_ADDRESS": "false",
+					"ENV": "local"
+				}
+			},
+			"todo": {
+				"envFile": "{projectRoot}/envs/.env.dev"
+			}
+		}
+	},
+	"tidy": {
+		"executor": "nx:run-commands",
+		"options": {
+			"command": "go mod tidy",
+			"cwd": "{projectRoot}"
+		}
+	},
+	"go-run": {
+		"executor": "nx:run-commands",
+		"dependsOn": ["tidy"],
+		"options": {
+			"command": "go run ./cmd/server/main.go",
+			"cwd": "{projectRoot}"
+		}
+	}
+  }
+}

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	entity "libs/services/entities/exchange-rate/entity"
 	usecase "libs/services/usecases/exchange-rate/usecases"
 	"net/http"
@@ -27,8 +28,10 @@ func (h *WebServiceExchangeRateHandler) ListCurrentExchangeRate(w http.ResponseW
 	code := r.URL.Query().Get("code")
 	codeIn := r.URL.Query().Get("code_in")
 	if code == "" || codeIn == "" {
-		code = "USD"
-		codeIn = "BRL"
+		// code = "USD"
+		// codeIn = "BRL"
+		http.Error(w, errors.New("missing required query parameters 'code' and 'code_in").Error(), http.StatusBadRequest)
+		return
 	}
 
 	getExchangeRate := usecase.NewGetExchangeRateUseCase(h.ExchangeRateRepository)
