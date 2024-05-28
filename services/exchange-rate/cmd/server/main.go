@@ -29,7 +29,9 @@ func main() {
 	webserver := webserver.NewWebServer(webserverPort)
 	webserver.ConfigureDefaults()
 	webServiceExchangeRate := NewWebServiceExchangeRateHandler(dbClient, dbName)
+	webHealthz := NewHealthzHandler()
 	RegisterExchangeRateWebServerTransportRoutes(webserver, webServiceExchangeRate)
+	webserver.RegisterRoute(http.MethodGet, "/healthz", webHealthz.Healthz)
 
 	if err := webserver.Start(); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

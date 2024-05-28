@@ -14,6 +14,7 @@ use (
 	./libs/services/infrastructure/database/repositories/exchange-rate/in-memory/go-doc-db
 	./libs/services/infrastructure/database/repositories/exchange-rate/in-memory/sqlite-db
 	./libs/services/infrastructure/server/http/handlers/exchange-rate
+	./libs/services/infrastructure/server/http/handlers/health-check
 	./libs/services/infrastructure/server/http/webserver
 	./libs/services/usecases/exchange-rate
 	./libs/shared/go-request

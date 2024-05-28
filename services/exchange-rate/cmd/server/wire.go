@@ -3,12 +3,13 @@
 
 package main
 
-import ( 
+import (
 	"github.com/google/wire"
 	inMemoryDBClient "libs/resources/database/in-memory/go-doc-db-client/client"
 	entity "libs/services/entities/exchange-rate/entity"
 	repository "libs/services/infrastructure/database/repositories/exchange-rate/in-memory/go-doc-db/repository"
 	webHandler "libs/services/infrastructure/server/http/handlers/exchange-rate"
+	webHealthCheckHandler "libs/services/infrastructure/server/http/handlers/health-check"
 )
 
 var setExchangeRateRepositoryDependency = wire.NewSet(
@@ -25,4 +26,11 @@ func NewWebServiceExchangeRateHandler(client *inMemoryDBClient.Client, databaseN
 		webHandler.NewWebServiceExchangeRateHandler,
 	)
 	return &webHandler.WebServiceExchangeRateHandler{}
+}
+
+func NewHealthzHandler() *webHealthCheckHandler.WebHealthzHandler {
+    wire.Build(
+        webHealthCheckHandler.NewWebHealthzHandler,
+    )
+    return &webHealthCheckHandler.WebHealthzHandler{}
 }

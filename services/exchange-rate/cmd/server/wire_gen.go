@@ -12,6 +12,7 @@ import (
 	"libs/services/entities/exchange-rate/entity"
 	"libs/services/infrastructure/database/repositories/exchange-rate/in-memory/go-doc-db/repository"
 	"libs/services/infrastructure/server/http/handlers/exchange-rate"
+	"libs/services/infrastructure/server/http/handlers/health-check"
 )
 
 // Injectors from wire.go:
@@ -20,6 +21,11 @@ func NewWebServiceExchangeRateHandler(client2 *client.Client, databaseName strin
 	exchangeRateRepository := godocdbrepository.NewExchangeRateRepository(databaseName, client2)
 	webServiceExchangeRateHandler := handlers.NewWebServiceExchangeRateHandler(exchangeRateRepository)
 	return webServiceExchangeRateHandler
+}
+
+func NewHealthzHandler() *healthcheckhandler.WebHealthzHandler {
+	webHealthzHandler := healthcheckhandler.NewWebHealthzHandler()
+	return webHealthzHandler
 }
 
 // wire.go:

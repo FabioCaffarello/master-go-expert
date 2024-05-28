@@ -32,3 +32,6 @@ serve-doc: # build-docs
 
 deploy-doc: build-docs
 	poetry run mkdocs gh-deploy
+
+start:
+	. ./hack/start.sh

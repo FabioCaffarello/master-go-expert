@@ -22,6 +22,11 @@ services:
     container_name: exchange-rate-api
     ports:
       - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://exchange-rate:8000/healthz"]
+      interval: 10s
+      timeout: 1s
+      retries: 3
     networks:
       - master-go-expert-networks
 

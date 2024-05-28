@@ -3,7 +3,7 @@ WORKDIR /app
 COPY dist/server .
 
 # Install CA certificates
-RUN apk update && apk add --no-cache ca-certificates && update-ca-certificates && curl
+RUN apk update && apk add --no-cache ca-certificates && update-ca-certificates
 
 
 CMD ["./server"]

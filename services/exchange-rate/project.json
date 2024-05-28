@@ -60,6 +60,25 @@
 				"command": "go run ./cmd/server/main.go ./cmd/server/wire_gen.go",
 				"cwd": "{projectRoot}"
 			}
+		},
+		"temp-start": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "echo %EXCHANGE_RATE_ENV_PATH%",
+				"cwd": "{projectRoot}"
+			},
+			"configurations": {
+				"production": {
+					"env": {
+						"EXCHANGE_RATE_ENV_PATH": "{projectRoot}/envs/.env.prod"
+					}
+				},
+				"development": {
+					"env": {
+						"EXCHANGE_RATE_ENV_PATH": "{projectRoot}/envs/.env.dev"
+					}
+				}
+			}
 		}
 	}
 }
