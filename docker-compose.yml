@@ -1,0 +1,36 @@
+services:
+#   rabbitmq:
+#     image: rabbitmq:3-management
+#     container_name: rabbitmq
+#     ports:
+#       - 5672:5672
+#       - 15672:15672
+#     environment:
+#       RABBITMQ_DEFAULT_USER: guest
+#       RABBITMQ_DEFAULT_PASS: guest
+#       RABBITMQ_DEFAULT_VHOST: /
+#     healthcheck:
+#       test: ["CMD", "rabbitmq-diagnostics", "ping"]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 2
+#     networks:
+#       - master-go-expert-networks
+
+  exchange-rate-api:
+    image: fabiocaffarello/exchange-rate-api:latest
+    container_name: exchange-rate-api
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://exchange-rate:8000/healthz"]
+      interval: 10s
+      timeout: 1s
+      retries: 3
+    networks:
+      - master-go-expert-networks
+
+networks:
+  master-go-expert-networks:
+    name: master-go-expert-network
+    driver: bridge

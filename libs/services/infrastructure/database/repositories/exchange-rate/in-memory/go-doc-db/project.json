@@ -1,0 +1,32 @@
+{
+  "name": "libs-services-infrastructure-database-repositories-in-memory-go-doc-db",
+  "$schema": "../../../../../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/services/infrastructure/database/repositories/exchange-rate/in-memory/go-doc-db",
+  "tags": [
+    "lang:golang",
+    "scope:service"
+  ],
+  "targets": {
+    "test": {
+      "executor": "@nx-go/nx-go:test"
+    },
+    "lint": {
+      "executor": "@nx-go/nx-go:lint"
+    },
+    "tidy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go mod tidy",
+        "cwd": "{projectRoot}"
+      }
+	},
+    "godoc": {
+      "executor": "nx:run-commands",
+      "options": {
+		"command": "gomarkdoc --output docs/godoc.md ./...",
+		"cwd": "{projectRoot}"
+      }
+    }
+  }
+}
